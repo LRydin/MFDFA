@@ -6,7 +6,6 @@
 %\usepackage{float}
 \usepackage{amssymb, amsmath, amsfonts}  %amssymb, amsmath, amsfonts
 \usepackage{graphicx}
-\usepackage{todonotes}
 
 \usepackage[rmargin=20mm, tmargin=20mm, bmargin=20mm, lmargin=60mm]{geometry}
 
@@ -34,11 +33,11 @@ Multifractal Detrended Fluctuation Analysis in Python
 %%%%% Beginning of the main text %%%%%
 
 \section*{Summary}
-A common tool to unveil the nature of the fractionality of a process, natural or computer-generated, is the Detrended Fluctuation Analysis (DFA), initally developed by Peng \textit{et al} and later extended to study multifractal processes by Kandelhardt \textit{et al}, giving rise to Multifractal Detrended Fluctuation Analysis (MFDFA) \cite{Peng1994,Kantelhardt2002}.
+A common tool to unveil the nature of the scaling and fractionality of a process, natural or computer-generated, is the Detrended Fluctuation Analysis (DFA), initally developed by Peng \textit{et al} and later extended to study multifractal processes by Kandelhardt \textit{et al}, giving rise to Multifractal Detrended Fluctuation Analysis (MFDFA) \cite{Peng1994,Kantelhardt2002}.
 It addresses the question of the presence of long-range correlations and can be employ to study discrete processes, as auto-regressive models, as well as time-continuous stochastic processes.
 An extensive study of DFA and the interplay between trends in data and correlated noise can be found in \cite{Hu2001}.
 
-In order to determine the self-affinity of a stochastic process, one can study the relation between the variance of the process and time.
+In order to determine the self-similarity of a stochastic process, one can study the relation between the variance of the process and time.
 Auto-regressive and stochastic processes diffuse with different rates, and uncovering the rates of diffusion is of importance in natural processes with power-law correlations, like temperature variability \cite{Meyer2019} earthquake frequency \cite{Shadkhoo2009}, heartbeat dynamics \cite{Ivanov1999}.
 Fluctuation Analysis provides a method to uncover these correlations, but fails in the presence of trends in the data, which is, for example, particularly present in weather and climate data.
 Detrending the data via polynominal fittings allows one to uncover solely the relation between the inherent fluctuations and the time scaling of a process.
@@ -83,10 +82,10 @@ The inherent scaling properties of the data, is the data displays power-law corr
 \begin{equation}
   F^2(s) \sim s^{h(q)},\nonumber
 \end{equation}
-where $h(q)$ is the \textit{self-affinity} exponent, which may dependent on $q$, and relates to the previously introduced Hurst exponent.
-The self-affinity exponent $h(q)$ is calculated by finding the slope of this curve in the log-log plots, as seen henceforth in the figures.
+where $h(q)$ is the \textit{self-similarity} exponent, which may dependent on $q$, and relates to the previously introduced Hurst exponent.
+The self-similarity exponent $h(q)$ is calculated by finding the slope of this curve in the log-log plots, as seen henceforth in the figures.
 
-If the data is monofractal, the \textit{self-affinity} exponent $h(q)=h$ is independent of $q$.
+If the data is monofractal, the \textit{self-similarity} exponent $h(q)=h$ is independent of $q$.
 On the other hand, if the data is multifractal, the dependence on $q$ can be understood by studying the multifractal scaling exponent $\tau(q)$ \cite{Barabasi1991}
 \begin{equation}
   \tau(q) = qh(q) - 1.\nonumber
@@ -141,8 +140,8 @@ The library is fully developed to work with multithreading, which shows an incre
 
 
 \section*{Acknowledgements}
-I'd like to thank Fabian Harang, Marc Lagunas, Anton Yurchenko-Tytarenko, Dennis Schroeder, Michele Giordano, Giulia di Nunno and Fred Espen Benth for all the help in understanding stochastic processes, Dirk Witthaut for the support, and Marieke Helmich for the text reviews.
-I gratefully acknowledges support by the Helmholtz Association, via the joint initiative \textit{Energy System 2050 - A Contribution of the Research Field Energy}, the grant No. VH-NG-1025, the scholarship funding from \textit{E.ON Stipendienfonds}, and the \textit{STORM - Stochastics for Time-Space Risk Models} project of the Research Council of Norway (RCN) No. 274410, under the supervision of Giulia di Nunno.
+I'd like to thank Fabian Harang, Marc Lagunas Merino, Anton Yurchenko-Tytarenko, Dennis Schroeder, Michele Giordano, Giulia di Nunno and Fred Espen Benth for all the help in understanding stochastic processes, and Dirk Witthaut for the unwavering support.
+I gratefully acknowledge support by the Helmholtz Association, via the joint initiative \textit{Energy System 2050 - A Contribution of the Research Field Energy}, the grant No. VH-NG-1025, the scholarship funding from \textit{E.ON Stipendienfonds}, and the \textit{STORM - Stochastics for Time-Space Risk Models} project of the Research Council of Norway (RCN) No. 274410.
 
 \bibstyle{unsrt}
 \bibliography{bib}
