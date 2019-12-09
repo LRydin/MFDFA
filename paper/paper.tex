@@ -33,19 +33,19 @@ Multifractal Detrended Fluctuation Analysis in Python
 %%%%% Beginning of the main text %%%%%
 
 \section*{Summary}
-A common tool to unveil the nature of the scaling and fractionality of a process, natural or computer-generated, is the Detrended Fluctuation Analysis (DFA), initally developed by Peng \textit{et al} and later extended to study multifractal processes by Kandelhardt \textit{et al}, giving rise to Multifractal Detrended Fluctuation Analysis (MFDFA) \cite{Peng1994,Kantelhardt2002}.
-It addresses the question of the presence of long-range correlations and can be employ to study discrete processes, as auto-regressive models, as well as time-continuous stochastic processes.
+A common tool to unveil the nature of the scaling and fractionality of a process, natural or computer-generated, is the Detrended Fluctuation Analysis (\texttt{DFA}), initally developed by Peng \textit{et al.} and later extended to study multifractal processes by Kandelhardt \textit{et al.}, giving rise to Multifractal Detrended Fluctuation Analysis (\texttt{MFDFA}) \cite{Peng1994,Kantelhardt2002}.
+It addresses the question of the presence of long-range correlations and can be employ to study discrete processes \cite{Hurst1951}, as auto-regressive models, as well as time-continuous stochastic processes.
 An extensive study of DFA and the interplay between trends in data and correlated noise can be found in \cite{Hu2001}.
 
-In order to determine the self-similarity of a stochastic process, one can study the relation between the variance of the process and time.
-Auto-regressive and stochastic processes diffuse with different rates, and uncovering the rates of diffusion is of importance in natural processes with power-law correlations, like temperature variability \cite{Meyer2019} earthquake frequency \cite{Shadkhoo2009}, heartbeat dynamics \cite{Ivanov1999}.
+In order to determine the self-similarity of a stochastic process, one can study the relation between the variance of the process and time or space.
+Auto-regressive and stochastic processes diffuse with different rates, and uncovering the rates of diffusion is of importance in natural processes with power-law correlations, like temperature variability \cite{Meyer2019} earthquake frequency \cite{Shadkhoo2009}, and heartbeat dynamics \cite{Ivanov1999}.
 Fluctuation Analysis provides a method to uncover these correlations, but fails in the presence of trends in the data, which is, for example, particularly present in weather and climate data.
 Detrending the data via polynominal fittings allows one to uncover solely the relation between the inherent fluctuations and the time scaling of a process.
 Moreover, several processes might be driven by more than one time scale.
 They might be of a mono- or multi-fractal nature.
-By studying a continuum of power variations of the Detrended Fluctuation Analysis one extends into Multifractal Detrended Fluctuation Analysis, which permits the study of the fractality of the data by comparing power variations of Detrended Fluctuation Analysis, see below.
+By studying a continuum of power variations of the Detrended Fluctuation Analysis one extends into Multifractal Detrended Fluctuation Analysis, which permits the study of the fractality of the data by comparing power variations of Detrended Fluctuation Analysis.
 
-There are currently no flexible and available implementations of Multifractal Detrended Fluctuation Analysis in python, but there are several Matlab versions available.
+There are currently no flexible and available implementations of Multifractal Detrended Fluctuation Analysis in \texttt{python}, but there are several \texttt{Matlab} versions available.
 There is a particularly thorought introductory guide to Multifractal Detrended Fluctuation Analysis, and subsequently a source-code by Espen Ihlen from 2012~\cite{Ihlen2012}, which is flexible but slow.
 With this implementation, efficiency was sought, by making the most out of Python, reshaping the code to allow for multithreading, especially relying on \texttt{numpy}'s \texttt{polynomial}, which scales easily with modern computers having more CPU cores.
 
@@ -70,72 +70,85 @@ where $y_{v,i}$ is the polynomial fitting for the segment $i$ of length $v$.
 One also has the freedom to choose the order of the polynomial fitting.
 This gives rise to the denotes \texttt{DFA1}, \texttt{DFA2}, \dots, for the orders chosen.
 
-Notice now $F^2(v,s)$ is a function of each variance of each $v$-segment of data and of the different $s$-lenght segments chosen.
+Notice now $F^2(v,s)$ is a function of each variance of each $v$-segment of data and of the different $s$-length segments chosen.
 On can now define, will all due generally, the $q$-th order fluctuation function by averaging each row of segments of size $s$
 \begin{equation}
-  F_q^2(s) = \left\{\frac{1}{N_s} \sum_{v=1}^{N_s} [F^2(v,s)]^{q/2}\right\}^{1/q}\nonumber
+  F_q^2(s) = \left\{\frac{1}{N_s} \sum_{v=1}^{N_s} [F^2(v,s)]^{q/2}\right\}^{1/q}\nonumber \tag{1}
 \end{equation}
 where Detrended Fluctuation Analysis with $q=2$ is a subset of Multifractal Detrended Fluctuation Analysis (where $q\in \mathbb{R}$).
 The $q$-th order fluctuation function $F_q^2(s)$ is our object of interest.
 
-The inherent scaling properties of the data, is the data displays power-law correlations, can now be studying in a log-log plot of $F_q^2(s)$ versus $s$, where the scaling of the data obeys a power-law with exponent $h(q)$ as
+The inherent scaling properties of the data, if the data displays power-law correlations, can now be studied in a log-log plot of $F_q^2(s)$ versus $s$, where the scaling of the data obeys a power-law with exponent $h(q)$ as
 \begin{equation}
   F^2(s) \sim s^{h(q)},\nonumber
 \end{equation}
-where $h(q)$ is the \textit{self-similarity} exponent, which may dependent on $q$, and relates to the previously introduced Hurst exponent.
+where $h(q)$ is the \textit{self-similarity} exponent, which may dependent on $q$, and relates directly to the Hurst index.
 The self-similarity exponent $h(q)$ is calculated by finding the slope of this curve in the log-log plots, as seen henceforth in the figures.
 
 If the data is monofractal, the \textit{self-similarity} exponent $h(q)=h$ is independent of $q$.
-On the other hand, if the data is multifractal, the dependence on $q$ can be understood by studying the multifractal scaling exponent $\tau(q)$ \cite{Barabasi1991}
+On the other hand, if the data is multifractal, the dependence on $q$ can be understood by studying the multifractal scaling exponent $\tau(q)$
 \begin{equation}
-  \tau(q) = qh(q) - 1.\nonumber
+  \tau(q) = qh(q) - 1.\nonumber \tag{2}
 \end{equation}
-For a clearer discussion of these properties, see \cite{Kantelhardt2002,Barabasi1991}.
-
+For a clearer discussion of these properties, see \cite{Barabasi1991,Kantelhardt2002}. If $\tau(q)$ is a linear function, the process is monofractal.
 
 \section{Examples}
-
-To exemplify the usage of Multifractal Detrended Fluctuation Analysis, take two common examples of stochastic processes, a continuous-time stochastic process: fractional Ornstein--Uhlenbeck process and a discrete auto-regressive process:
+To exemplify the usage of Multifractal Detrended Fluctuation Analysis, take two common examples of stochastic processes, a fractional Ornstein--Uhlenbeck process and general process that has a symmetric Lévy $\alpha$-stable distribution, with single parameter $\alpha$.
 
 For an example of multifractal behaviour in real-world data of sun spots timeseries, alongside a detailed explanation of MFDFA, or an application to European temperature variability, see respectively \cite{Movahed2006} and \cite{Meyer2019}.
 
 To study the scaling effects in continuous stochastic processes, three exemplary fractional Ornstein--Uhlenbeck processes are taken, given by
 \begin{equation}
-  dX_t = - \theta X_t dt + \sigma d B^H_t, \tag{(1)}
+  dX_t = - \theta X_t dt + \sigma d B^H_t, \tag{3}
 \end{equation}
 with fixed $\theta=1.0$ and $\sigma=0.5$, but with a Hurst index of $H=0.3, 0.5, 0.7$.
-Fractional Brownian motion self-similarity exponent is given by the Hurst index $H$, thus the three choices of fractional Ornstein--Uhlenbeck should result in a scaling of $\alpha = H+1$, where $+1$ is due to the integration of the process (i.e., and increase in regularity).
-In Fig. (1) the MFDFA of the three processes can be seen.
-The slopes of the curve in a log-log plot yield the self-similarity factor $\alpha$ matching with the expected values.
+Fractional Brownian motion self-similarity exponent is given by the Hurst index $H$, thus the three choices of fractional Ornstein--Uhlenbeck should result in a scaling of $h(q) = h = H+1$, where $+1$ is due to the integration of the process (i.e., and increase in regularity).
+In Fig. 1 the MFDFA of the three processes can be seen.
+The slopes of the curve in a log-log plot yield the self-similarity factor $h$ matching with the expected values.
 
 \begin{figure}[h]
-  \includegraphics[width = 0.5\linewidth]{fig1.pdf}
-  \caption{Multifractal Detrended Fluctuation Analysis of three examplary paths of fractional Ornstein--Uhlenbeck processes, given by Eq. (1),
-  with Hurst indices of $H=0.3, 0.5, 0.7$.
-  The self-similarity scalings $\alpha$ are obtained my extracting the slopes of the curves (in a log-log scale).
-  Numerically integrated with an integration step $\Delta t = 0.0001$ over $500$ time units ($5\times10^6$ data points)}\label{fig:1}
+  \includegraphics[width = 0.98\linewidth]{fig1.pdf}
+  \caption{Multifractal Detrended Fluctuation Analysis of three exemplary paths of fractional Ornstein--Uhlenbeck processes, given by Eq. (3),  with Hurst indices of $H=0.3, 0.5, 0.7$. Panel a) displays the log-log plot of the segment size $s$ versus the fluctuation function $F_q^2(s)$ [Eq. (1)], for $q=2$.
+  The inset shows $F_q^2(s)$ for the case of $H=0.3$ and the power variations $q=-10,-2,2,10$.
+  The lines are all parallel, indicating that the process is monofractal, as expected.
+  The dashed lines indicate the theoretical expected scalings.
+  The self-similarity scalings $h$ are obtained by extracting the slopes of the curves (in a log-log scale).
+  Panel b) shows the multifractal scaling exponent $\tau(q)$ [Eq. (2)] which exhibits a linear dependency, i.e. $h(q)=h$, indicating again the process is monofractal.
+  Numerically integrated with an integration step $\Delta t = 0.001$ over $100$ time units ($N=10^5$ data points).
+  The \texttt{MFDFA} algorithm ran in $2.67\!~$s$\pm 178\!~$ms, for $100$ segments $s$ and $40$ q-variation powers, with $2$ CPU cores.}
 \end{figure}
 
+Secondly, in the spirit of Kandelhardt \textit{et al}, take a process $X_t$ that has an symmetric $\alpha$-stable distribution, i.e., it has a power-law distribution function $P(x)\sim x^{-(\alpha-1)}$.
+These processes exhibit heavy tails, infinite variances, and multifractal scaling.
+In Fig. 2 three processes which are symmetric $\alpha$-stable distributed, with $\alpha = 1.75, 1.25,$ and $0.75$, are shown.
+The multifractal behaviour can be identified directly in panel a), for $\alpha = 1.25$, given the curves of $F_q^2(s)$ are no longer parallel for different $q$-variations.
+
 \begin{figure}[h]
-  \includegraphics[width = 0.5\linewidth]{fig2.pdf}
-  \caption{Multifractal Detrended Fluctuation Analysis of four examplary paths of a fractional Ornstein--Uhlenbeck process with $H=0.7$, fixed $\sigma = 1$, fixed integration timestep $\Delta t = 0.001$, but varying $\lambda = 100, 10, 1,$ and $0.1$ (bottom to top).
-  Regardless of the integration timestep, the generalised Hurst exponent $\alpha$ matches the expected value: $\alpha = 0.7$ for $dB_{H=0.7}(t)$, $\alpha = 1.7$ for $B_{H=0.7}(t)$.
-  Numerically integrated with an integration step $\Delta t = 0.001$ over $5000$ time units ($5\times10^6$ data points)}\label{fig:2}
+  \includegraphics[width = 0.98\linewidth]{fig2.pdf}
+  \caption{Multifractal Detrended Fluctuation Analysis of three exemplary symmetric Lévy $\alpha$-stable distributed processes, with $\alpha = 1.75, 1.25,$ and $0.75$, are shown.
+  In panel a) the $\alpha = 1.25$ Lévy distributed process is shown, and $F_q^2(s)$ for $q = -10, -5, -2, 2, 5, 10$ are displayed.
+  For $q>0$ the curves are not parallel, indicating the multifractal nature of the process.
+  Panel b) displays the \textit{self-similarity} exponent $h(q)$ , where a clear non-linear dependency on $q$ is observable.
+  The inset displays the multifractal scaling exponent $\tau(q)$ displaying two clear distinct behaviours for $q<0$ and $q>0$.
+  The dashed lines indicate the theoretical expected scalings.
+  The three process were drawn from Lévy $\alpha$-stable distributions, each with $N=10^6$ data points.
+  The \texttt{MFDFA} algorithm ran in $30.8\!~$s$\pm 940\!~$ms with $2$ CPU cores ($16.8\!~$s$\pm 91\!~$ms with $16$ CPU cores), for $100$ segments $s$ and $40$ q-variation powers}
 \end{figure}
 
 \section{The \texttt{MFDFA} library}
 The Multifractal Detrended Fluctuation Analysis library \texttt{MFDFA} presented is a standalone package based integrally on python's \texttt{numpy}, thus it can avail also of \texttt{numpy}'s masked arrays \texttt{ma}, which is particularly convenient when dealing with large datasets with missing data.
 
 The \texttt{MFDFA} library offers a considerable speed-up in comparison with the available Matlab version.
-The library is fully developed to work with multithreading, which shows an increase in performance while handling timeseries larger than $10^5$ data points, as seen in Fig.(3).
+The library is fully developed to work with multithreading, which shows an increase in performance while handling timeseries larger than $10^5$ data points, as seen in Fig. 3.
 
 \begin{figure}[h]
   \includegraphics[width = 0.5\linewidth]{fig3.pdf}
   \caption{Performance of \texttt{MFDFA} in comparison with the distributed \texttt{Matlab} version \cite{Ihlen2012}.
-  The \texttt{MFDFA} library and \texttt{Matlab} version were tested for a timeseries of a fractional Ornstein--Uhlenbeck with increasing length.
+  The \texttt{MFDFA} library and \texttt{Matlab} version were tested for a timeseries of a fractional Ornstein--Uhlenbeck [Eq. (3)] with increasing number of points $N$.
   The \texttt{MFDFA} library is also tested with $2$ and $16$ cores.
   Speed-ups are only noticeable above $10^5$ data points.
-  The Matlab code is truncated, since the computation times start exceeding $200$ seconds.}
+  The Matlab code is truncated, since the computation times start exceeding $200$ seconds.
+  Both codes were tested for $20$ segments $s$ and $10$ q-variation powers.}
 \end{figure}
 
 
