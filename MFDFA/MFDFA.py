@@ -10,8 +10,7 @@ from numpy.polynomial.polynomial import polyfit, polyval
 import matplotlib.pyplot as plt
 
 def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
-          q: np.ndarray=2, modified: bool=False, error: bool=False,
-          overlap: bool=True) -> np.ndarray:
+          q: np.ndarray=2, modified: bool=False) -> np.ndarray:
     """
     Multi-Fractal Detrended Fluctuation Analysis of timeseries.
 
@@ -42,13 +41,6 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         standard MFDFA will result in inacurate results, thus a further
         integration of the timeseries yields a modified scaling coefficient.
 
-    error: bool
-        Output standard deviations of calculation. If error = True, output is a
-        tuple.
-
-    overlap: bool=True
-        [to be implemented] for short timeseries, allows overlap of windows.
-
     Returns
     -------
     lag: np.ndarray of ints
@@ -57,11 +49,6 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
     f: np.ndarray
         A array of shape (size(lag),size(q)) of variances over the indicated
         lag windows and the indicated q-fractal powers.
-
-    f_std: np.ndarray
-        A array of shape (size(lag),size(q)) of the standard deviations of the
-        averaging of the windows to account for the errors in the calculation.
-        Requires error = True.
     """
 
     # Force lag to be ints
@@ -126,23 +113,8 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
               1 / q.T),
             axis = 0)
 
-        # if error = True calculates the errors
-        if error == True:
-            f_std = np.append(f_std,
-                  np.float_power(
-                    np.std( np.float_power(F, q / 2), axis = 1) / 2,
-                  1 / q.T)
-                  + np.float_power(
-                    np.std( np.float_power(F_r, q / 2), axis = 1) / 2,
-                  1 / q.T),
-                axis = 0)
+    return lag, f
 
-        # @Francisco Magia a fazer aqui?
-
-    if error == False:
-        return lag, f
-    elif error == True:
-        return lag, f, f_std
 
 def MFDFA_plot(lag: np.ndarray, f: np.ndarray) -> None:
     """
@@ -157,8 +129,8 @@ def MFDFA_plot(lag: np.ndarray, f: np.ndarray) -> None:
         The array of variances over the indicated windows.
     """
 
-    plt.loglog(lag, f, ',')
-    plt.xlabel('window size')
-    plt.xlabel('variances')
+    plt.loglog(lag, f, 'o')
+    plt.xlabel('segments s')
+    plt.ylabel('Fluctuation function ')
 
     return
