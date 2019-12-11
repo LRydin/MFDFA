@@ -111,6 +111,7 @@ venv.bak/
 
 *.blg
 
+.plotgen.txt
 paper/paperNotes.bib
 
 *.out
