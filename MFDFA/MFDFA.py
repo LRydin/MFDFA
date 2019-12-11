@@ -7,7 +7,6 @@
 
 import numpy as np
 from numpy.polynomial.polynomial import polyfit, polyval
-import matplotlib.pyplot as plt
 
 def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
           q: np.ndarray=2, modified: bool=False) -> np.ndarray:
@@ -81,10 +80,6 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
     # Return f of (fractal)-variances
     f = np.empty((0, q.size))
 
-    # Return f_std of errors
-    if error == True:
-        f_std = np.empty((0, q.size))
-
     # Loop over elements in lag
     # Notice that given one has to slip the timeseries into diferent segments of
     # length lag(), so some elements at the end of the array might be missing.
@@ -114,23 +109,3 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
             axis = 0)
 
     return lag, f
-
-
-def MFDFA_plot(lag: np.ndarray, f: np.ndarray) -> None:
-    """
-    Log-log of lag and DFA function
-
-    Parameters
-    ----------
-    lag: np.ndarray of ints
-        x-axis of the plot, with the window sizes in logarithmic scale.
-
-    f: np.ndarray
-        The array of variances over the indicated windows.
-    """
-
-    plt.loglog(lag, f, 'o')
-    plt.xlabel('segments s')
-    plt.ylabel('Fluctuation function ')
-
-    return
