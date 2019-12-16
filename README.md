@@ -1,3 +1,5 @@
+[![Documentation Status](https://readthedocs.org/projects/mfdfa/badge/?version=latest)](https://mfdfa.readthedocs.io/en/latest/?badge=latest)
+
 # MFDFA
 Multifractal Detrended Fluctuation Analysis `MFDFA` is a model-independent method to uncover the self-similarity of a stochastic process or auto-regressive model.
 `DFA` was first developed by Peng *et al.*<sup>1</sup> and later extended to study multifractality `MFDFA` by Kandelhardt *et al.*<sup>2</sup>.
