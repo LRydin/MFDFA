@@ -1,6 +1,17 @@
 # MFDFA
 Multifractal Detrended Fluctuation Analysis `MFDFA` is a model-independent method to uncover the self-similarity of a stochastic process or auto-regressive model.
-`DFA` was first developed by Peng *et al*<sup>1</sup> and later extended to study multifractality `MFDFA` by Kandelhardt *et al*<sup>2</sup>.
+`DFA` was first developed by Peng *et al.*<sup>1</sup> and later extended to study multifractality `MFDFA` by Kandelhardt *et al.*<sup>2</sup>.
+
+# Installation
+For now `MFDFA` is on the test PyPI system, so you can install it via
+
+```
+pip install -i https://test.pypi.org/simple/ MFDFA
+```
+Then on your favourite editor just use
+```python
+from kramersmoyal import km, kernels
+```
 
 # The `MFDFA` library
 The `MFDFA` library is a standalone `numpy`-dependent only library to study self-similarity and factality in stochastic processes. It is designed take advantage of `numpy`'s `polynomial` package, thus scales well with several CPUs.
@@ -11,7 +22,7 @@ The `MFDFA` library is a standalone `numpy`-dependent only library to study self
 For a more detailed explanation on how to integrate an Ornstein–Uhlenbeck process, see the [kramersmoyal's package](https://github.com/LRydin/KramersMoyal#a-one-dimensional-stochastic-process).
 You can also follow the [fOU.ipynb](/examples/fOU.ipynb)
 
-## Generating a fractional Ornstein–Uhlenbeck process
+### Generating a fractional Ornstein–Uhlenbeck process
 This is one method of generating a (fractional) Ornstein–Uhlenbeck process with *H=0.7*, employing a simple Euler–Maruyama integration method
 
 ```python
@@ -44,7 +55,7 @@ for i in range(1, time.size):
 ```
 And now you have a fractional process with a self-similarity exponent *H=0.7*
 
-## Using the `MFDFA`
+### Using the `MFDFA`
 To now utilise the `MFDFA`, we take this exemplary process and run the (multifractal) detrended fluctuation analysis. For now lets consider only the monofractal case, so we need only `q=2`.
 ```python
 # Select a band of lags, which usually ranges from
@@ -79,7 +90,20 @@ np.polyfit(np.log(lag[:15]), np.log(dfa[:15]),1)[0]
 
 <img src="/other/fig1.png" title="MFDFA of a fractional Ornstein–Uhlenbeck process" height="250"/>
 
-More examples to come soon.
+
+
+## Uncovering multifractality in stochastic processes
+`MFDFA`, as an extension to `DFA`, was developed to uncover if a given process is mono or multi fractal.
+Let `Xₜ` be a multi fractal stochastic process. This mean `Xₜ` scales with some function alpha(t) as `Xcₜ = |c|alpha(t) Xₜ`.
+With the help of taking different powers variations of the `DFA`, one we can distinguish monofractal and multifractal processes.
+
+### An example of multifractal behaviour
+To be continued
+
+
+# Changelog
+- Version 0.2 - Removed experimental features. Added documentation
+- Version 0.1 - Uploaded initial working code
 
 # Contributions
 I welcome reviews and ideas from everyone. If you want to share your ideas or report a bug, open an [issue](https://github.com/LRydin/KramersMoyal/issues) here on GitHub, or contact me directly.
