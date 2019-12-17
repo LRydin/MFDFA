@@ -22,10 +22,10 @@ bibliography: bib.bib
 
 A common tool to unveil the nature of the scaling and fractionality of a process, natural or computer-generated, is the Detrended Fluctuation Analysis (`DFA`), initally developed by Peng *et al.* and later extended to study multifractal processes by Kandelhardt *et al.*, giving rise to Multifractal Detrended Fluctuation Analysis (`MFDFA`) [@Peng1994;@Kantelhardt2002].
 It addresses the question of the presence of long-range correlations and can be employ to study discrete processes [@Hurst1951], like auto-regressive models, as well as time-continuous stochastic processes.
-An extensive study of DFA and the interplay between trends in data and correlated noise can be found in [@Hu2001].
+An extensive study of DFA and the interplay between trends in data and correlated noise can be found in @Hu2001.
 
 In order to determine the self-similarity of a stochastic process, one can study the relation between the variance of the process and time or space.
-Auto-regressive and stochastic processes diffuse with different rates, and uncovering the rates of diffusion is of importance in natural processes with power-law correlations, like temperature variability [@Meyer2019] earthquake frequency [@Shadkhoo2009], and heartbeat dynamics [@Ivanov1999].
+Auto-regressive and stochastic processes diffuse with different rates, and uncovering the rates of diffusion is of importance in natural processes with power-law correlations, like temperature variability [@Meyer2019], earthquake frequency [@Shadkhoo2009], and heartbeat dynamics [@Ivanov1999].
 Fluctuation Analysis provides a method to uncover these correlations, but fails in the presence of trends in the data, which is, for example, particularly present in weather and climate data.
 Detrending the data via polynominal fittings allows one to uncover solely the relation between the inherent fluctuations and the time scaling of a process.
 Moreover, several processes might be driven by more than one time scale.
@@ -77,8 +77,7 @@ On the other hand, if the data is multifractal, the dependence on $q$ can be und
 $$
   \tau(q) = qh(q) - 1.\nonumber \tag{2}
 $$
-For a clearer discussion of these properties, see \cite{Barabasi1991,Kantelhardt2002}. If $\tau(q)$ is a linear function, the process is monofractal.
-
+For a clearer discussion of these properties, see [@Barabasi1991;@Kantelhardt2002]. If $\tau(q)$ is a linear function, the process is monofractal.
 
 # Examples
 To exemplify the usage of Multifractal Detrended Fluctuation Analysis, take two common examples of stochastic processes, a fractional Ornstein--Uhlenbeck process and general process that has a symmetric Lévy $\alpha$-stable distribution, with single parameter $\alpha$.
@@ -126,7 +125,7 @@ The `MFDFA` library offers a considerable speed-up in comparison with the availa
 The library is fully developed to work with multithreading, which shows an increase in performance while handling timeseries larger than $10^5$ data points, as seen in Fig. 3.
 
 ![Fig. 3](fig3.pdf)
-Fig. 3: Performance of `MFDFA` in comparison with the distributed `Matlab` version \cite{Ihlen2012}.
+Fig. 3: Performance of `MFDFA` in comparison with the distributed `Matlab` version [@Ihlen2012].
 The `MFDFA` library and `Matlab` version were tested for a timeseries of a fractional Ornstein--Uhlenbeck [Eq. (3)] with increasing number of points $N$.
 The `MFDFA` library is also tested with $2$ and $16$ cores.
 Speed-ups are only noticeable above $10^5$ data points.
