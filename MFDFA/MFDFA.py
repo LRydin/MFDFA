@@ -1,5 +1,5 @@
 ## This is based on Kantelhardt, J. W., Zschiegner, S. A., Koscielny-Bunde, E.,
-# Havlin, S., Bunde, A., & Stanley, H. E., Multifractal detrended  fluctuation
+# Havlin, S., Bunde, A., & Stanley, H. E., Multifractal detrended fluctuation
 # analysis of nonstationary time series. Physica A, 316(1-4), 87-114, 2002 as
 # well as on nolds (https://github.com/CSchoel/nolds) and on work by  Espen A.
 # F. Ihlen, Introduction to multifractal detrended fluctuation analysis in
@@ -11,7 +11,24 @@ from numpy.polynomial.polynomial import polyfit, polyval
 def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
           q: np.ndarray=2, modified: bool=False) -> np.ndarray:
     """
-    Multi-Fractal Detrended Fluctuation Analysis of timeseries.
+    Multi-Fractal Detrended Fluctuation Analysis of timeseries. MFDFA generates
+    a fluctuation function F²(q,s), with s the segment size and q the q-powers,
+    Take a timeseries Xₜ, find the integral Yₜ = cumsum(Xₜ), and segment the
+    timeseries into Nₛ segments of size s.
+                                        ₛ
+                          Fᵥ²(s) = ¹/ₛ∑[Yᵥᵢ - yᵥᵢ]²
+                                        ⁱ
+    with yᵥᵢ the polynomial fittings of order m. Having obtained the variances
+    of each (detrended) segment, average over s and increase s, to obtain the
+    fluctuation function Fₚ²(s) depending on the segment lenght.
+
+                       F²(q,s) = {1/Nₛ∑[Fᵥ²(s)]^q/2}^1/q,
+                                     ᵛ
+    The fluctuation function F²(q,s) can now be plotted in a log-log scale, the
+    slope of the fluctuation function F²(q,s) vs the s-segment size is the
+    self-similarity scaling h(q)
+
+                                  F²(q,s) ~ sʰ.
 
     Parameters
     ----------
