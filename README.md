@@ -4,16 +4,19 @@
 Multifractal Detrended Fluctuation Analysis `MFDFA` is a model-independent method to uncover the self-similarity of a stochastic process or auto-regressive model.
 `DFA` was first developed by Peng *et al.*<sup>1</sup> and later extended to study multifractality `MFDFA` by Kandelhardt *et al.*<sup>2</sup>.
 
+This library has been submitted for publication at [The Journal of Open Source Software](https://joss.theoj.org/). The review process can be found [here on GitHub](https://github.com/openjournals/joss-reviews/issues/1966).
+
 # Installation
 For now `MFDFA` is on the test PyPI system, so you can install it via
 
 ```
 pip install -i https://test.pypi.org/simple/ MFDFA
 ```
-Then on your favourite editor just use
+On your favourite editor simply import `MFDFA` as
 ```python
-from kramersmoyal import km, kernels
+from MFDFA import MFDFA
 ```
+There is an added library `fgn` to generate fractional Gaussian noise.
 
 # The `MFDFA` library
 The `MFDFA` library is a standalone `numpy`-dependent only library to study self-similarity and factality in stochastic processes. It is designed take advantage of `numpy`'s `polynomial` package, thus scales well with several CPUs.
