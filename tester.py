@@ -3,9 +3,6 @@ import numpy as np
 from numpy.polynomial.polynomial import polyfit
 import matplotlib.pyplot as plt
 
-# import os; os.chdir('/media/lrydin/Sciebo/Git/MFDFA')
-import os; os.chdir('/home/leo/Sciebo/Git/MFDFA')
-
 from MFDFA import MFDFA
 from MFDFA import fgn
 
@@ -17,7 +14,7 @@ from MFDFA import fgn
 
 # Generate some path with a simple Euler–Maruyama integrator
 
-# integration time and time sampling
+# Integration time and time sampling
 t_final = 100
 delta_t = 0.001
 
@@ -46,7 +43,7 @@ plt.plot(time, X)
 
 # %% MFDFA
 # Select the segment lengths s, denoted lag here
-lag = np.unique(np.logspace(0, np.log10(X.size // 1000), 20).astype(int)+1)
+lag = np.unique(np.logspace(0, np.log10(X.size // 100), 25).astype(int)+1)
 
 # q-variations to calculate
 q = np.linspace(1,10,10)
