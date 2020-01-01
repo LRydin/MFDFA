@@ -30,6 +30,9 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
 
                                   F²(q,s) ~ sʰ.
 
+    If H ≈ 0 in a monofractal series, use a second integration step by setting
+    'modified' = True.
+
     Parameters
     ----------
     timeseries: np.ndarray
@@ -39,7 +42,7 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         An array with the window sizes to calculate (ints). Notice
         min(lag) > order + 1 because to fit a polynomial of order m one needs at
         least m points. The results are meaningless for 'order = m' and for
-        lag ≈ size of data / 4 since there is low statistics with only 4 windows
+        lag > size of data / 4 since there is low statistics with < 4 windows
         to divide the timeseries.
 
     order: int
@@ -60,20 +63,25 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
     Returns
     -------
     lag: np.ndarray of ints
-        Array of lags, realigned and with entries > order + 1
+        Array of lags, realigned, preserving only different lags and with
+        entries > order + 1
 
     f: np.ndarray
         A array of shape (size(lag),size(q)) of variances over the indicated
         lag windows and the indicated q-fractal powers.
     """
 
-    # Force lag to be ints
-
+    # Force lag to be ints, ensure lag > order + 1
     lag = lag[lag > order + 1]
     lag = np.round(lag).astype(int)
 
+    # Assert if timeseries is 1 dimensional
+    if timeseries.ndim > 1:
+        assert timeseries.shape[1] == 1, "Timeseries needs to be 1 dimensional"
+
+    timeseries = timeseries.reshape(-1,1)
     # Size of array
-    N = timeseries.size
+    N = timeseries.shape[0]
 
     # Fractal powers as floats
     q = np.asarray_chkfinite(q, dtype = float)
@@ -126,3 +134,5 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
             axis = 0)
 
     return lag, f
+
+# TODO: Add log calculator for q ≈ 0
