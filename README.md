@@ -1,4 +1,5 @@
-[![Documentation Status](https://readthedocs.org/projects/mfdfa/badge/?version=latest)](https://mfdfa.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/mfdfa/badge/?version=latest)](https://mfdfa.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.org/LRydin/MFDFA.svg?branch=master)](https://travis-ci.org/LRydin/MFDFA) [![codecov](https://codecov.io/gh/LRydin/MFDFA/branch/master/graph/badge.svg)](https://codecov.io/gh/LRydin/MFDFA)
+
 
 # MFDFA
 Multifractal Detrended Fluctuation Analysis `MFDFA` is a model-independent method to uncover the self-similarity of a stochastic process or auto-regressive model.
