@@ -5,7 +5,7 @@ sys.path.append("../")
 from MFDFA import MFDFA
 
 def test_MFDFA():
-    for N in [10_000, 1_000_000]:
+    for N in [10000, 1000000]:
         for q_list in [1, 2, 6, 21]:
             for order in [1,2,3,4]:
 

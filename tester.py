@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from MFDFA import MFDFA
 from MFDFA import fgn
 
+
 # %% Lets take a fractional Ornstein–Uhlenbeck process Xₜ with a time-dependent
 # diffusion or volatility σₜ, some drift of mean reverting term θ(Xₜ), and
 # fractional Gaussian noise with Hurst exponent H
