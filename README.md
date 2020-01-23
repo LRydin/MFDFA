@@ -1,11 +1,9 @@
-[![Documentation Status](https://readthedocs.org/projects/mfdfa/badge/?version=latest)](https://mfdfa.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.org/LRydin/MFDFA.svg?branch=master)](https://travis-ci.org/LRydin/MFDFA) [![codecov](https://codecov.io/gh/LRydin/MFDFA/branch/master/graph/badge.svg)](https://codecov.io/gh/LRydin/MFDFA)
+[![DOI](https://zenodo.org/badge/224135077.svg)](https://zenodo.org/badge/latestdoi/224135077) [![Documentation Status](https://readthedocs.org/projects/mfdfa/badge/?version=latest)](https://mfdfa.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.org/LRydin/MFDFA.svg?branch=master)](https://travis-ci.org/LRydin/MFDFA) [![codecov](https://codecov.io/gh/LRydin/MFDFA/branch/master/graph/badge.svg)](https://codecov.io/gh/LRydin/MFDFA)
 
 
 # MFDFA
 Multifractal Detrended Fluctuation Analysis `MFDFA` is a model-independent method to uncover the self-similarity of a stochastic process or auto-regressive model.
 `DFA` was first developed by Peng *et al.*<sup>1</sup> and later extended to study multifractality `MFDFA` by Kandelhardt *et al.*<sup>2</sup>.
-
-This library has been submitted for publication at [The Journal of Open Source Software](https://joss.theoj.org/). The review process can be found [here on GitHub](https://github.com/openjournals/joss-reviews/issues/1966).
 
 # Installation
 For now `MFDFA` is on the test PyPI system, so you can install it via
@@ -117,6 +115,9 @@ If you need help with the code, the theory, or the implementation, do not hesita
 This package abides to a [Conduct of Fairness](contributions.md).
 
 # Literature and Support
+### Submission history
+This library has been submitted for publication at [The Journal of Open Source Software](https://joss.theoj.org/) in December 2019. It was rejected. The review process can be found [here on GitHub](https://github.com/openjournals/joss-reviews/issues/1966). The plan is to extend the library and find another publisher.
+
 ### History
 This project was started in 2019 at the [Department of Mathematics, University of Oslo](https://www.mn.uio.no/math/english/research/groups/risk-stochastics/) in the Risk and Stochastics section by Leonardo Rydin Gorjão and is supported by Dirk Witthaut and the [Institute of Energy and Climate Research Systems Analysis and Technology Evaluation](https://www.fz-juelich.de/iek/iek-ste/EN/Home/home_node.html). I'm very thankful to all the folk in Section 3 in the Department of Mathematics, University of Oslo, for helping me getting around the world of stochastic processes: Dennis, Anton, Michele, Fabian, Marc, Prof. Benth and Prof. di Nunno.
 
