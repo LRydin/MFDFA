@@ -58,7 +58,7 @@ One also has the freedom to choose the order of the polynomial fitting.
 This gives rise to the denotes `DFA1`, `DFA2`, $\dots$, for the orders chosen.
 
 Notice now $F^2(v,s)$ is a function of each variance of each $v$-segment of data and of the different $s$-length segments chosen.
-On can now define, will all due generally, the $q$-th order fluctuation function by averaging each row of segments of size $s$
+One can now define, will all due generally, the $q$-th order fluctuation function by averaging each row of segments of size $s$
 $$
   F_q^2(s) = \left\{\frac{1}{N_s} \sum_{v=1}^{N_s} [F^2(v,s)]^{q/2}\right\}^{1/q}\nonumber \tag{1}
 $$
