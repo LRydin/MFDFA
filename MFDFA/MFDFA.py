@@ -15,23 +15,32 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
     a fluctuation function F²(q,s), with s the segment size and q the q-powers,
     Take a timeseries Xₜ, find the integral Yₜ = cumsum(Xₜ), and segment the
     timeseries into Nₛ segments of size s.
-                                        ₛ
-                          Fᵥ²(s) = ¹/ₛ∑[Yᵥᵢ - yᵥᵢ]²
-                                        ⁱ
-    with yᵥᵢ the polynomial fittings of order m. Having obtained the variances
-    of each (detrended) segment, average over s and increase s, to obtain the
-    fluctuation function Fₚ²(s) depending on the segment lenght.
 
-                       F²(q,s) = {1/Nₛ∑[Fᵥ²(s)]^q/2}^1/q,
-                                     ᵛ
-    The fluctuation function F²(q,s) can now be plotted in a log-log scale, the
-    slope of the fluctuation function F²(q,s) vs the s-segment size is the
-    self-similarity scaling h(q)
+    .. math::
 
-                                  F²(q,s) ~ sʰ.
+        F^2(v,s) = \dfrac{1}{s} \sum_{i=1}^s [Y_{(v-1)s + i} - y_{v,i}]^2,
+        ~\mathrm{for}~v=1,2, \dots, N_s,
 
-    If H ≈ 0 in a monofractal series, use a second integration step by setting
-    'modified' = True.
+    with :math:`y_{v,i}` the polynomial fittings of order m. Having obtained
+    the variances of each (detrended) segment, average over s and increase s, to
+    obtain the fluctuation function :math:`F_q^2(s)` depending on the segment
+    length.
+
+    .. math::
+
+        F_q^2(s) = \Bigg\{\dfrac{1}{N_s} \sum_{v=1}^{N_s}
+        [F^2(v,s)]^{q/2}\Bigg\}^{1/q}
+
+    The fluctuation function :math:`F_q^2(s)` can now be plotted in a log-log
+    scale, the slope of the fluctuation function :math:`F_q^2(s)` vs the
+    s-segment size is the self-similarity scaling :math:`h(q)`
+
+    .. math::
+
+        F_q^2(s) \sim s^{h(q)}.
+
+    If :math:`H \approx 0` in a monofractal series, use a second integration
+    step by setting :code:`modified = True`.
 
     Parameters
     ----------
