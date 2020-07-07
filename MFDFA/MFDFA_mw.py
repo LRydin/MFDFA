@@ -8,40 +8,23 @@
 import numpy as np
 from numpy.polynomial.polynomial import polyfit, polyval
 
-def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
-          q: np.ndarray=2, stat: bool=False, extensions: list=['None'],
-          modified: bool=False) -> np.ndarray:
+def MFDFA_mw(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
+          q: np.ndarray=2, window: int=1, stat: bool=False,
+          extensions: list=['None'], modified: bool=False) -> np.ndarray:
     """
-    Multifractal Detrended Fluctuation Analysis of timeseries. MFDFA generates
+    Moving window method for Multifractal Detrended Fluctuation Analysis of a
+    timeseries. This is particularly valuabe for short time series. Notice that
+    this increases the run time of the MFDFA by ``N!``.
+
+    Considers a moving window over the timeseries instead of segmenting the
+    timeseries in disjoint parts. For more information about MFDFA, read the
+    MFDFA documentation.
+
+
+     generates
     a fluctuation function F²(q,s), with s the segment size and q the q-powers,
     Take a timeseries Xₜ, find the integral Yₜ = cumsum(Xₜ), and segment the
     timeseries into Nₛ segments of size s.
-
-    .. math::
-
-        F^2(v,s) = \dfrac{1}{s} \sum_{i=1}^s [Y_{(v-1)s + i} - y_{v,i}]^2,
-        ~\mathrm{for}~v=1,2, \dots, N_s,
-
-    with :math:`y_{v,i}` the polynomial fittings of order m. Having obtained
-    the variances of each (detrended) segment, average over s and increase s, to
-    obtain the fluctuation function :math:`F_q^2(s)` depending on the segment
-    length.
-
-    .. math::
-
-        F_q^2(s) = \Bigg\{\dfrac{1}{N_s} \sum_{v=1}^{N_s}
-        [F^2(v,s)]^{q/2}\Bigg\}^{1/q}
-
-    The fluctuation function :math:`F_q^2(s)` can now be plotted in a log-log
-    scale, the slope of the fluctuation function :math:`F_q^2(s)` vs the
-    s-segment size is the self-similarity scaling :math:`h(q)`
-
-    .. math::
-
-        F_q^2(s) \sim s^{h(q)}.
-
-    If :math:`H ≈ 0` in a monofractal series, use a second integration
-    step by setting :code:`modified = True`.
 
     Parameters
     ----------
@@ -64,6 +47,10 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         Fractal exponent to calculate. Array in ``[-10,10]``. The values = 0
         will be removed, since the code does not converge there. ``q = 2`` is
         the standard Detrended Fluctuation Analysis as is set a default.
+
+    window: int (default = 1)
+        int > 0 with the number of steps the window shoud move over the data.
+        ``window = 1`` will move window by ``1`` step.
 
     stat: bool (default = False)
         Calculates the standard deviation associated with each segment's
@@ -136,25 +123,25 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
     if 'eDFA' in extensions:
         f_eDFA = np.empty((0, q.size))
 
-    # Loop over elements in lag
+    # Loop over elements in lag and use an moving window
     # Notice that given one has to slip the timeseries into diferent segments of
     # length lag(), so some elements at the end of the array might be missing.
-    # The same procedure it run in reverse, were elements at the begining of the
-    # series are discared instead
+
     for i in lag:
-        # Reshape into (N/lag, lag)
-        Y_ = Y[:N - N % i].reshape((N - N % i) // i, i)
-        Y_r = Y[N % i:].reshape((N - N % i) // i, i)
+        F = np.empty(0)
+        for j in range(i-1):
 
-        # Perform a polynomial fit to each segments
-        p = polyfit(X[:i], Y_.T, order)
-        p_r = polyfit(X[:i], Y_r.T, order)
+            # subtract j points as the moving window shortens the data
+            N_0 = N - j
 
-        # Subtract the trend from the fit and calculate the variance
-        F = np.append(
-                np.var(Y_ - polyval(X[:i], p), axis = 1),
-                np.var(Y_r - polyval(X[:i], p_r), axis = 1)
-            )
+            # Reshape into (N_0/lag, lag)
+            Y_ = Y[j:N_0 - N_0 % i].reshape((N_0 - N_0 % i) // i, i)
+
+            # Perform a polynomial fit to each segments
+            p = polyfit(X[:i], Y_.T, order)
+
+            # Subtract the trend from the fit and calculate the variance
+            F = np.append(F, np.var(Y_ - polyval(X[:i], p), axis = 1) )
 
         # Caculate the Multi-Fractal Detrended Fluctuation Analysis
         f = np.append(f,
