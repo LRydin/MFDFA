@@ -53,9 +53,13 @@ q = np.linspace(1,10,10)
 # fittings used, i.e., DFA1 in this case
 lag, dfa = MFDFA(X, lag, q = q, order = 1)
 
+# check Nondetrended MFFA
+lag_noDetrend, dfa_noDetrend = MFDFA(X, lag, q = q, order = 0)
+
 # %% Plots
 # Visualise the results in a log-log plot
 plt.loglog(lag, dfa, '.');
+plt.loglog(lag_noDetrend, dfa_noDetrend, '.');
 
 # %%
 # Extract the slopes and compare with H + 1, i.e., 1.7.

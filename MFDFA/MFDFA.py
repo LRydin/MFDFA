@@ -58,6 +58,8 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         The order of the polynomials to approximate. 'order = 1' is the DFA1,
         which is a least-square fit of the data with a first order polynomial (a
         line), 'order = 2' is a second-order polynomial, etc..
+        order = 0 skips the detrending process and hence gives the Nondetrended
+        fluctuatioin functions.
 
     q: np.ndarray
         Fractal exponent to calculate. Array in [-10,10]. The values = 0 will be
@@ -124,15 +126,20 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         Y_ = Y[:N - N % i].reshape((N - N % i) // i, i)
         Y_r = Y[N % i:].reshape((N - N % i) // i, i)
 
-        # Perform a polynomial fit to each segments
-        p = polyfit(X[:i], Y_.T, order)
-        p_r = polyfit(X[:i], Y_r.T, order)
+        if order == 0:
+            # Skip detrending
+            F = np.var(Y_, axis=1)
+            F_r =  np.var(Y_r, axis=1)
+        else:
+            # Perform a polynomial fit to each segments
+            p = polyfit(X[:i], Y_.T, order)
+            p_r = polyfit(X[:i], Y_r.T, order)
 
-        # Subtract the trend from the fit and calculate the variance
-        F = np.var(Y_ - polyval(X[:i], p), axis = 1)
-        F_r = np.var(Y_r - polyval(X[:i], p_r), axis = 1)
+            # Subtract the trend from the fit and calculate the variance
+            F = np.var(Y_ - polyval(X[:i], p), axis = 1)
+            F_r = np.var(Y_r - polyval(X[:i], p_r), axis = 1)
 
-        # Caculate the Multi-Fractal Detrended Fluctuation Analysis
+        # Caculate the Multi-Fractal Nondetrended or Detrended Fluctuation Analysis
         f = np.append(f,
               np.float_power(
                 np.mean( np.float_power(F, q / 2), axis = 1) / 2,
