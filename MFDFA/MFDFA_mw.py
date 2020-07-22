@@ -89,7 +89,11 @@ def MFDFA_mw(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
 
     # Assert if timeseries is 1 dimensional
     if timeseries.ndim > 1:
-        assert timeseries.shape[1] == 1, "Timeseries needs     f = np.empty((0, q.size))to be 1 dimensional"
+        assert timeseries.shape[1] == 1, "Timeseries needs to be 1 dimensional"
+
+    # Assert window is int and > 0
+    assert isinstance(window, int), "'window' is not integer"
+    assert window > 0, "'window' is not > 0"
 
     timeseries = timeseries.reshape(-1,1)
     # Size of array
@@ -129,13 +133,13 @@ def MFDFA_mw(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
 
     for i in lag:
         F = np.empty(0)
-        for j in range(i-1):
+        for j in range(0, i-1, window):
 
             # subtract j points as the moving window shortens the data
             N_0 = N - j
 
             # Reshape into (N_0/lag, lag)
-            Y_ = Y[j:N_0 - N_0 % i].reshape((N_0 - N_0 % i) // i, i)
+            Y_ = Y[j:N - N_0 % i].reshape((N - N_0 % i) // i, i)
 
             # Perform a polynomial fit to each segments
             p = polyfit(X[:i], Y_.T, order)
@@ -149,6 +153,7 @@ def MFDFA_mw(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
                 np.mean(np.float_power(F, q / 2), axis = 1) / 2,
               1 / q.T),
             axis = 0)
+
 
         # Caculate standard deviation associated with each mean
         if stat == True:
