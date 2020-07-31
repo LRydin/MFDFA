@@ -16,8 +16,13 @@ from MFDFA import fgn
 # Generate some path with a simple Euler–Maruyama integrator
 
 # Integration time and time sampling
+""" 
 t_final = 100
 delta_t = 0.001
+"""
+t_final = 10
+delta_t = 0.01
+
 
 # The parameters θ and σ
 theta = 1
@@ -51,7 +56,16 @@ q = np.linspace(1,10,10)
 
 # dfa records the fluctuation function, order = 1 is the order of the polynomial
 # fittings used, i.e., DFA1 in this case
-lag, dfa = MFDFA(X, lag, q = q, order = 1)
+lag, dfa = MFDFA(
+    X, 
+    lag, 
+    q = q, 
+    order = 1,
+    emdConfig = {
+        "detrendByEMD": True,
+        "chosenIMFIndices": [0,1,2]
+    }
+)
 
 # check Nondetrended MFFA
 lag_noDetrend, dfa_noDetrend = MFDFA(X, lag, q = q, order = 0)
