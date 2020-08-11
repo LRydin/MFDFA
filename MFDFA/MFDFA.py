@@ -9,17 +9,9 @@ import numpy as np
 from numpy.polynomial.polynomial import polyfit, polyval
 from EMD.emdDetrender import getDetrendedtimeseries
 
-def MFDFA(
-        timeseries: np.ndarray,
-        lag: np.ndarray=None,
-        order: int=1,
-        q: np.ndarray=2,
-        modified: bool=False,
-        emdConfig: dict={
-            "detrendByEMD":False,
-            "chosenIMFIndices":[]
-        }
-    ) -> np.ndarray:
+def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
+          q: np.ndarray=2, modified: bool=False, extensions: dict={
+          "EMD":False, "IMFs":[]}) -> np.ndarray:
     """
     Multi-Fractal Detrended Fluctuation Analysis of timeseries. MFDFA generates
     a fluctuation function F²(q,s), with s the segment size and q the q-powers,
@@ -80,14 +72,15 @@ def MFDFA(
         For data with the Hurst exponent ≈ 0, i.e., strongly anticorrelated, a
         standard MFDFA will result in inacurate results, thus a further
         integration of the timeseries yields a modified scaling coefficient.
-    
-    emdConfig: dict
-        "detrendByEMD": bool
-            If True, then detrends the timeseries by Emperical Mode Decomposition (EMD) 
-            analysis based on the IMF-indices listed in emdConfig["chosenIMFIndices"] 
-        "chosenIMFIndices": list
-            Indices of the user-chosen IMFs obtain from an (externally performed) EMD
-            analysis. The indexing starts from 0.
+
+    extensions: dict
+        "EMD": bool
+            If True, then detrends the timeseries by Emperical Mode
+            Decomposition (EMD) analysis based on the IMF-indices listed in
+            extensions["IMFs"]
+        "IMFs": list
+            Indices of the user-chosen IMFs obtain from an (externally
+            performed) EMD analysis. The indexing starts from 0.
 
     Returns
     -------
@@ -140,7 +133,7 @@ def MFDFA(
     # The same procedure it run in reverse, were elements at the begining of the
     # series are discared instead
     for i in lag:
-        if  emdConfig["detrendByEMD"] == False: 
+        if  extensions["EMD"] == False:
             # Reshape into (N/lag, lag)
             Y_ = Y[:N - N % i].reshape((N - N % i) // i, i)
             Y_r = Y[N % i:].reshape((N - N % i) // i, i)
@@ -157,19 +150,18 @@ def MFDFA(
                 # Subtract the trend from the fit and calculate the variance
                 F = np.var(Y_ - polyval(X[:i], p), axis = 1)
                 F_r = np.var(Y_r - polyval(X[:i], p_r), axis = 1)
-        
+
         else:
-            # detrend using EMD
-            IMFsToBeSubtracted = emdConfig["chosenIMFIndices"]
-            Y_detrended = getDetrendedtimeseries(Y, IMFsToBeSubtracted)
-            
+            # Detrendign using EMD
+            Y_detrended = getDetrendedtimeseries(Y, extensions["IMFs"])
+
             # Reshape into (N/lag, lag)
             Y_ = Y_detrended[:N - N % i].reshape((N - N % i) // i, i)
             Y_r = Y_detrended[N % i:].reshape((N - N % i) // i, i)
 
             # calculate the variance
             F = np.var(Y_, axis=1)
-            F_r =  np.var(Y_r, axis=1)
+            F_r = np.var(Y_r, axis=1)
 
         # Caculate the Multi-Fractal Nondetrended or Detrended Fluctuation Analysis
         f = np.append(f,
