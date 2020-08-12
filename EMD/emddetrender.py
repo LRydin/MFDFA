@@ -5,7 +5,7 @@
 from PyEMD import EMD
 import numpy as np
 
-def detrendedtimeseries(timeseries: np.ndarray, IMFmodes: list):
+def detrendedtimeseries(timeseries: np.ndarray, modes: list):
     """
     The function calculates the Intrinsic Mode Functions (IMFs) of a given
     timeseries, subtracts the user-chosen IMFs for detrending, and returns the
@@ -17,7 +17,7 @@ def detrendedtimeseries(timeseries: np.ndarray, IMFmodes: list):
     timeseries: np.ndarray
         A 1-dimensional timeseries of length ``N``.
 
-    IMFmodes: list
+    modes: list
         List of integers indicating the indices of the IMFs to be
         subtracted/detrended from the ``timeseries``.
 
@@ -25,9 +25,6 @@ def detrendedtimeseries(timeseries: np.ndarray, IMFmodes: list):
     -------
     detrendedTimeseries: np.ndarray
         Detrended 1-dimensional ``timeseries``.
-
-
-
 
     References
     ----------
@@ -42,17 +39,14 @@ def detrendedtimeseries(timeseries: np.ndarray, IMFmodes: list):
     """
 
     # Obtain Intrinsic Mode Functions (IMFs) using pyEMD
-    IMFs = getIMFs(timeseries)
+    IMF = IMFs(timeseries)
 
-    # tobeSubtracted = timeseries*0
-    # for i in range(len(IMFmodes)):
-    #     tobeSubtracted = np.add(tobeSubtracted, IMFs[i])
-
-    detrendedTimeseries = timeseries - np.sum(IMFs[IMFmodes, :], axis = 0)
+    # Subtract the selected IMFs 'modes' from the timeseries
+    detrendedTimeseries = timeseries - np.sum(IMF[modes, :], axis = 0)
 
     return detrendedTimeseries
 
-def getIMFs(timeseries: np.ndarray):
+def IMFs(timeseries: np.ndarray):
     """
     Extract the Intrinsic Mode Functions (IMFs) of a given timeseries.
 
@@ -65,6 +59,8 @@ def getIMFs(timeseries: np.ndarray):
     -------
     IMFs: np.ndarray
         The Intrinsic Mode Functions (IMFs) of the Empirical Mode Decomposition.
+        These are of shape ``(..., timeseries.size)``, with the first dimension
+        varying depending on the data. Last entry is the residuals.
     """
     # Initiate pyEMD's EMD function
     emd = EMD()
@@ -72,4 +68,5 @@ def getIMFs(timeseries: np.ndarray):
     # Obtain the Intrinsic Mode Functions (IMFs)
     IMFs = emd(timeseries)
 
+    # Returns the IMFs as a (..., timeseries.size) numpy array.
     return IMFs
