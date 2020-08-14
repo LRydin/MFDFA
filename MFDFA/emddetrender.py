@@ -26,6 +26,10 @@ def detrendedtimeseries(timeseries: np.ndarray, modes: list):
     detrendedTimeseries: np.ndarray
         Detrended 1-dimensional ``timeseries``.
 
+    Notes
+    -----
+    .. versionadded:: 0.3
+
     References
     ----------
     .. [Huang1998] N. E. Huang, Z. Shen, S. R. Long, M. C. Wu, H. H. Shih, Q.
@@ -55,6 +59,10 @@ def IMFs(timeseries: np.ndarray):
     timeseries: np.ndarray
         A 1-dimensional timeseries of length ``N``.
 
+    Notes
+    -----
+    .. versionadded:: 0.3
+    
     Returns
     -------
     IMFs: np.ndarray

@@ -72,22 +72,20 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         Calculates the standard deviation associated with each segment's
         averaging.
 
-    extensions: list (default = 'None')
-        Include some of the recent added functionalities to DFA and MFDFA.
-        Currently implemented are:
-            ``'eDFA'`` - A method to evaluate the strength of multifractality.
-
     modified: bool (default = False)
         For data with the Hurst index ≈ 0, i.e., strongly anticorrelated, a
         standard MFDFA will result in inacurate results, thus a further
         integration of the timeseries yields a modified scaling coefficient.
 
-    extensions: dict (default ``None``)
-        "EMD": list
-            If not ``None``, requires a list of indices of the user-chosen IMFs
-            obtained from an (externally performed) EMD analysis. The indexing
-            starts from 0. Will enforce ``order = 0`` since there is no need
-            for a polynomial detrending.
+    extensions: dict
+     - ``EMD``: list (default ``None``)
+        If not ``None``, requires a list of indices of the user-chosen IMFs
+        obtained from an (externally performed) EMD analysis. The indexing
+        starts from ``0``. Will enforce ``order = 0`` since there is no need
+        for a polynomial detrending.
+     - ``eDFA``: bool (default ``False``)
+        A method to evaluate the strength of multifractality. Call function
+        `eDFA()`.
 
     Returns
     -------
@@ -116,7 +114,7 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
 
     # Assert if timeseries is 1 dimensional
     if timeseries.ndim > 1:
-        assert timeseries.shape[1] == 1, "Timeseries needs     f = np.empty((0, q.size))to be 1 dimensional"
+        assert timeseries.shape[1] == 1, "Timeseries needs to be 1 dimensional"
 
     timeseries = timeseries.reshape(-1,1)
     # Size of array
@@ -227,12 +225,16 @@ def eDFA(F: np.ndarray) -> np.ndarray:
     Parameters
     ----------
     F: np.ndarray
-        Fluctuation function
+        Fluctuation function given by the ``MFDFA()``.
 
     Returns
     -------
     res: np.ndarray
         Difference of `max` and `min`.
+
+    Notes
+    -----
+    .. versionadded:: 0.3
 
     References
     ----------
