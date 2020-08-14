@@ -7,10 +7,11 @@
 
 import numpy as np
 from numpy.polynomial.polynomial import polyfit, polyval
+from EMD.emddetrender import detrendedtimeseries
 
 def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
-          q: np.ndarray=2, stat: bool=False, extensions: list=['None'],
-          modified: bool=False) -> np.ndarray:
+          q: np.ndarray=2, modified: bool=False, extensions: dict={
+          "EMD":None}) -> np.ndarray:
     """
     Multi-Fractal Detrended Fluctuation Analysis of timeseries. MFDFA generates
     a fluctuation function F²(q,s), with s the segment size and q the q-powers,
@@ -58,7 +59,9 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
     order: int (default = 1)
         The order of the polynomials to approximate. ``order = 1`` is the DFA1,
         which is a least-square fit of the data with a first order polynomial (a
-        line), ``order = 2`` is a second-order polynomial, etc.
+        line), ``order = 2`` is a second-order polynomial, etc..
+        ``order = 0`` skips the detrending process and hence gives the
+        nondetrended fluctuation functions, i.e., simply Fluctuation Analysis.
 
     q: np.ndarray (default = 2)
         Fractal exponent to calculate. Array in ``[-10,10]``. The values = 0
@@ -79,6 +82,13 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         standard MFDFA will result in inacurate results, thus a further
         integration of the timeseries yields a modified scaling coefficient.
 
+    extensions: dict (default ``None``)
+        "EMD": list
+            If not ``None``, requires a list of indices of the user-chosen IMFs
+            obtained from an (externally performed) EMD analysis. The indexing
+            starts from 0. Will enforce ``order = 0`` since there is no need
+            for a polynomial detrending.
+
     Returns
     -------
     lag: np.ndarray of ints
@@ -86,14 +96,18 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         entries > order + 1
 
     f: np.ndarray
-        An array of shape ``(size(lag), size(q))`` of variances over the
-        indicated ``lag`` windows and the indicated ``q``-fractal powers.
+        A array of shape (size(lag),size(q)) of variances over the indicated
+        lag windows and the indicated q-fractal powers.
 
-    f_std: np.ndarray
-        Present only if ``stat = True``. An array of shape
-        ``(size(lag), size(q))`` of the standard deviations associated with each
-        averaging of ``f``, over the indicated ``lag`` windows and the indicated
-        ``q``-fractal powers.
+    References
+    ----------
+    .. [Peng1994] C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons, H. E.
+        Stanley, and A. L. Goldberger. "Mosaic organization of DNA nucleotides."
+        Phys. Rev. E, 49(2), 1685–1689, 1994.
+    .. [Kantelhardt2002] J. W. Kantelhardt, S. A. Zschiegner, E.
+        Koscielny-Bunde, S. Havlin, A. Bunde, H. E. Stanley. "Multifractal
+        detrended fluctuation analysis of nonstationary time series." Physica A:
+        316(1-4), 87–114, 2002.
     """
 
     # Force lag to be ints, ensure lag > order + 1
@@ -142,21 +156,34 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
     # The same procedure it run in reverse, were elements at the begining of the
     # series are discared instead
     for i in lag:
+        if extensions["EMD"] != None:
+            # Detrending of the timeseries using EMD with given IMFs in a list
+            Y = detrendedtimeseries(Y, extensions["EMD"])
+
+            # Force order = 0 since the data is detrended with EMD, i.e., no
+            # need to do polynomial fittings anymore
+            order = 0
+
         # Reshape into (N/lag, lag)
         Y_ = Y[:N - N % i].reshape((N - N % i) // i, i)
         Y_r = Y[N % i:].reshape((N - N % i) // i, i)
 
-        # Perform a polynomial fit to each segments
-        p = polyfit(X[:i], Y_.T, order)
-        p_r = polyfit(X[:i], Y_r.T, order)
+        # If order = 0 one gets simply a Fluctuation Analysis (FA)
+        if order == 0:
+            # Skip detrending
+            F = np.var(Y_, axis=1)
+            F_r =  np.var(Y_r, axis=1)
 
-        # Subtract the trend from the fit and calculate the variance
-        F = np.append(
-                np.var(Y_ - polyval(X[:i], p), axis = 1),
-                np.var(Y_r - polyval(X[:i], p_r), axis = 1)
-            )
+        else:
+            # Perform a polynomial fit to each segments
+            p = polyfit(X[:i], Y_.T, order)
+            p_r = polyfit(X[:i], Y_r.T, order)
 
-        # Caculate the Multi-Fractal Detrended Fluctuation Analysis
+            # Subtract the trend from the fit and calculate the variance
+            F = np.var(Y_ - polyval(X[:i], p), axis = 1)
+            F_r = np.var(Y_r - polyval(X[:i], p_r), axis = 1)
+
+        # Caculate the Multi-Fractal (Non)-Detrended Fluctuation Analysis
         f = np.append(f,
               np.float_power(
                 np.mean(np.float_power(F, q / 2), axis = 1) / 2,

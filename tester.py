@@ -16,8 +16,13 @@ from MFDFA import fgn
 # Generate some path with a simple Euler–Maruyama integrator
 
 # Integration time and time sampling
+"""
 t_final = 100
 delta_t = 0.001
+"""
+t_final = 100
+delta_t = 0.01
+
 
 # The parameters θ and σ
 theta = 1
@@ -42,21 +47,41 @@ for i in range(1,time.size):
 # Plot the path
 plt.plot(time, X)
 
+# %%
+
+from PyEMD import EMD
+
+emd = EMD()
+
+# Obtain the Intrinsic Mode Functions (IMFs)
+IMFs = emd(X)
+
+# %%
+IMFs.shape
+plt.plot(X)
+plt.plot(np.sum(IMFs[11:,:], axis=0).T)
+
 # %% MFDFA
 # Select the segment lengths s, denoted lag here
-lag = np.unique(np.logspace(0, np.log10(X.size // 100), 25).astype(int)+1)
+lag = np.unique(np.logspace(0, np.log10(X.size // 10), 25).astype(int)+1)
 
 # q-variations to calculate
-q = np.linspace(1,10,10)
+q = 2
 
 # dfa records the fluctuation function, order = 1 is the order of the polynomial
 # fittings used, i.e., DFA1 in this case
-lag, dfa = MFDFA(X, lag, q = q, order = 1)
+lag_emd, dfa_emd = MFDFA(X,lag,q = q, order = 1, extensions = {"EMD": True, "IMFs": [7,8,9,10] })
+
+# check Nondetrended MFFA
+lag, dfa = MFDFA(X, lag, q = q, order = 0)
 
 # %% Plots
 # Visualise the results in a log-log plot
-plt.loglog(lag, dfa, '.');
+plt.loglog(lag, dfa, '-');
+plt.loglog(lag_emd, dfa_emd, '.');
 
 # %%
 # Extract the slopes and compare with H + 1, i.e., 1.7.
-polyfit(np.log(lag[:]),np.log(dfa[:]),1)[1]
+polyfit(np.log(lag)[:10],np.log(dfa)[:10],1)[1]
+
+polyfit(np.log(lag_emd)[:10],np.log(dfa_emd)[:10],1)[1]
