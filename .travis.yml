@@ -7,6 +7,9 @@ python:
 #  - "nightly"
 # command to install dependencies
 
+before_install:
+  - pip install --upgrade pip setuptools wheel
+
 install:
   - pip install coverage
   - pip install -r requirements.txt

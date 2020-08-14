@@ -11,7 +11,7 @@ from .emddetrender import detrendedtimeseries
 
 def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
           q: np.ndarray=2, stat: bool=False, modified: bool=False,
-          extensions: dict={"EMD":None}) -> np.ndarray:
+          extensions: dict={"EMD":False, "eDFA":False}) -> np.ndarray:
     """
     Multi-Fractal Detrended Fluctuation Analysis of timeseries. MFDFA generates
     a fluctuation function F²(q,s), with s the segment size and q the q-powers,
@@ -78,7 +78,7 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         integration of the timeseries yields a modified scaling coefficient.
 
     extensions: dict
-     - ``EMD``: list (default ``None``)
+     - ``EMD``: list (default ``False``)
         If not ``None``, requires a list of indices of the user-chosen IMFs
         obtained from an (externally performed) EMD analysis. The indexing
         starts from ``0``. Will enforce ``order = 0`` since there is no need
@@ -145,16 +145,21 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
     if stat == True:
         f_std = np.empty((0, q.size))
 
-    if 'eDFA' in extensions:
+
+    if ('eDFA', True) in extensions.items():
         f_eDFA = np.empty((0, q.size))
 
-    if extensions["EMD"] != None:
-        # Detrending of the timeseries using EMD with given IMFs in a list
-        Y = detrendedtimeseries(Y, extensions["EMD"])
+    if 'EMD' in extensions:
+        if extensions['EMD'] != False:
+            # assert the dictionary entry is a list
+            assert isinstance(extensions['EMD'], list), 'list IMFs to detrend'
 
-        # Force order = 0 since the data is detrended with EMD, i.e., no
-        # need to do polynomial fittings anymore
-        order = 0
+            # Detrending of the timeseries using EMD with given IMFs in a list
+            Y = detrendedtimeseries(Y, extensions["EMD"])
+
+            # Force order = 0 since the data is detrended with EMD, i.e., no
+            # need to do polynomial fittings anymore
+            order = 0
 
     # Loop over elements in lag
     # Notice that given one has to slip the timeseries into diferent segments of
@@ -170,8 +175,7 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         # If order = 0 one gets simply a Fluctuation Analysis (FA)
         if order == 0:
             # Skip detrending
-            F = np.var(Y_, axis=1)
-            F_r =  np.var(Y_r, axis=1)
+            F = np.append( np.var(Y_, axis=1), np.var(Y_r, axis=1) )
 
         else:
             # Perform a polynomial fit to each segments
@@ -179,13 +183,15 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
             p_r = polyfit(X[:i], Y_r.T, order)
 
             # Subtract the trend from the fit and calculate the variance
-            F = np.var(Y_ - polyval(X[:i], p), axis = 1)
-            F_r = np.var(Y_r - polyval(X[:i], p_r), axis = 1)
+            F = np.append(
+                np.var(Y_ - polyval(X[:i], p), axis = 1),
+                np.var(Y_r - polyval(X[:i], p_r), axis = 1)
+            )
 
         # Caculate the Multi-Fractal (Non)-Detrended Fluctuation Analysis
         f = np.append(f,
               np.float_power(
-                np.mean(np.float_power(F, q / 2), axis = 1) / 2,
+                np.mean(np.float_power(F, q / 2), axis = 1),
               1 / q.T),
             axis = 0)
 
@@ -193,22 +199,22 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         if stat == True:
             f_std = np.append(f_std,
                   np.float_power(
-                    np.std(np.float_power(F, q / 2), axis = 1) / 2,
+                    np.std(np.float_power(F, q / 2), axis = 1),
                   1 / q.T),
                 axis = 0)
 
-        if 'eDFA' in extensions:
+        if ('eDFA', True) in extensions.items():
             f_eDFA = np.append(f_eDFA, eDFA(F))
 
 
     if stat == False:
-        if 'eDFA' in extensions:
-            return lag, f, f_eDFA
+        if ('eDFA', True) in extensions.items():
+            return lag, f, np.vstack(f_eDFA)
         else:
             return lag, f
     if stat == True:
-        if 'eDFA' in extensions:
-            return lag, f, f_std, f_eDFA
+        if ('eDFA', True) in extensions.items():
+            return lag, f, f_std, np.vstack(f_eDFA) 
         else:
             return lag, f, f_std
 
