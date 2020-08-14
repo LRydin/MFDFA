@@ -2,7 +2,7 @@ import numpy as np
 
 import sys
 sys.path.append("../")
-from MFDFA import emddetrender, IMFs
+from MFDFA import detrendedtimeseries, IMFs
 
 def test_EMD():
     for N in [1000, 10000]:
