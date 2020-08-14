@@ -7,11 +7,11 @@
 
 import numpy as np
 from numpy.polynomial.polynomial import polyfit, polyval
-from EMD.emddetrender import detrendedtimeseries
+from .emddetrender import detrendedtimeseries
 
 def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
-          q: np.ndarray=2, modified: bool=False, extensions: dict={
-          "EMD":None}) -> np.ndarray:
+          q: np.ndarray=2, stat: bool=False, modified: bool=False,
+          extensions: dict={"EMD":None}) -> np.ndarray:
     """
     Multi-Fractal Detrended Fluctuation Analysis of timeseries. MFDFA generates
     a fluctuation function F²(q,s), with s the segment size and q the q-powers,
@@ -106,7 +106,7 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         Phys. Rev. E, 49(2), 1685–1689, 1994.
     .. [Kantelhardt2002] J. W. Kantelhardt, S. A. Zschiegner, E.
         Koscielny-Bunde, S. Havlin, A. Bunde, H. E. Stanley. "Multifractal
-        detrended fluctuation analysis of nonstationary time series." Physica A:
+        detrended fluctuation analysis of nonstationary time series." Physica A,
         316(1-4), 87–114, 2002.
     """
 
@@ -150,19 +150,20 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
     if 'eDFA' in extensions:
         f_eDFA = np.empty((0, q.size))
 
+    if extensions["EMD"] != None:
+        # Detrending of the timeseries using EMD with given IMFs in a list
+        Y = detrendedtimeseries(Y, extensions["EMD"])
+
+        # Force order = 0 since the data is detrended with EMD, i.e., no
+        # need to do polynomial fittings anymore
+        order = 0
+
     # Loop over elements in lag
     # Notice that given one has to slip the timeseries into diferent segments of
     # length lag(), so some elements at the end of the array might be missing.
     # The same procedure it run in reverse, were elements at the begining of the
     # series are discared instead
     for i in lag:
-        if extensions["EMD"] != None:
-            # Detrending of the timeseries using EMD with given IMFs in a list
-            Y = detrendedtimeseries(Y, extensions["EMD"])
-
-            # Force order = 0 since the data is detrended with EMD, i.e., no
-            # need to do polynomial fittings anymore
-            order = 0
 
         # Reshape into (N/lag, lag)
         Y_ = Y[:N - N % i].reshape((N - N % i) // i, i)
@@ -203,9 +204,15 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
 
 
     if stat == False:
-        return lag, f
+        if 'eDFA' in extensions:
+            return lag, f, f_eDFA
+        else:
+            return lag, f
     if stat == True:
-        return lag, f, f_std
+        if 'eDFA' in extensions:
+            return lag, f, f_std, f_eDFA
+        else:
+            return lag, f, f_std
 
 def eDFA(F: np.ndarray) -> np.ndarray:
     """
@@ -229,11 +236,10 @@ def eDFA(F: np.ndarray) -> np.ndarray:
 
     References
     ----------
-    'Detrended fluctuation analysis of cerebrovascular responses to abrupt
-    changes in peripheral arterial pressure in rats', A.N. Pavlov, A.S.
-    Abdurashitov, A.A. Koronovskii, Jr., O.N. Pavlova, O.V.
-    Semyachkina-Glushkovskaya, J. Kurths, CNSNS 105232,
-    doi:10.1016/j.cnsns.2020.105232
+    .. [Pavlov2020] A. N. Pavlov, A. S. Abdurashitov, A. A. Koronovskii Jr., O.
+        N. Pavlova, O. V. Semyachkina-Glushkovskaya, and J. Kurths. "Detrended
+        fluctuation analysis of cerebrovascular responses to abrupt changes in
+        peripheral arterial pressure in rats." CNSNS 85, 105232, 2020
     """
 
     return np.max(F) - np.min(F)
