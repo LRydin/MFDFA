@@ -22,3 +22,15 @@ def test_MFDFA():
 
                 assert dfa.ndim == 2, "Output is not 2 dimensional"
                 assert dfa.shape[1] <= q.shape[0], "Output shape mismatch"
+
+                lag, dfa, dfa_std = MFDFA(X, lag = lag, q = q, order = 1,
+                  modified=True, stat=True)
+
+                assert dfa.ndim == 2, "Output is not 2 dimensional"
+                assert dfa.shape[1] <= q.shape[0], "Output shape mismatch"
+
+                lag, dfa = MFDFA(X, lag = lag, q = q, order = 1,
+                  modified=True, stat=False, extensions = 'eDFA')
+
+                assert dfa.ndim == 2, "Output is not 2 dimensional"
+                assert dfa.shape[1] <= q.shape[0], "Output shape mismatch"

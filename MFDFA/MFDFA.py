@@ -41,35 +41,44 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
 
         F_q^2(s) \sim s^{h(q)}.
 
-    If :math:`H \approx 0` in a monofractal series, use a second integration
+    If :math:`H ≈ 0` in a monofractal series, use a second integration
     step by setting :code:`modified = True`.
 
     Parameters
     ----------
     timeseries: np.ndarray
-        A 1-dimensional timeseries (N, 1). The timeseries of length N.
+        A 1-dimensional timeseries ``(N, 1)``. The timeseries of length ``N``.
 
     lag: np.ndarray of ints
         An array with the window sizes to calculate (ints). Notice
-        min(lag) > order + 1 because to fit a polynomial of order m one needs at
-        least m points. The results are meaningless for 'order = m' and for
+        ``min(lag) > order + 1`` given a polynomial fit of order ``m`` needs at
+        least ``m`` points. The results are meaningless for 'order = m' and for
         lag > size of data / 4 since there is low statistics with < 4 windows
         to divide the timeseries.
 
-    order: int
-        The order of the polynomials to approximate. 'order = 1' is the DFA1,
+    order: int (default = 1)
+        The order of the polynomials to approximate. ``order = 1`` is the DFA1,
         which is a least-square fit of the data with a first order polynomial (a
-        line), 'order = 2' is a second-order polynomial, etc..
-        order = 0 skips the detrending process and hence gives the Nondetrended
-        fluctuatioin functions.
+        line), ``order = 2`` is a second-order polynomial, etc..
+        ``order = 0`` skips the detrending process and hence gives the
+        nondetrended fluctuation functions, i.e., simply Fluctuation Analysis.
 
-    q: np.ndarray
-        Fractal exponent to calculate. Array in [-10,10]. The values = 0 will be
-        removed, since the code does not converge there. q = 2 is the standard
-        Detrended Fluctuation Analysis as is set a default.
+    q: np.ndarray (default = 2)
+        Fractal exponent to calculate. Array in ``[-10,10]``. The values = 0
+        will be removed, since the code does not converge there. ``q = 2`` is
+        the standard Detrended Fluctuation Analysis as is set a default.
 
-    modified: bool
-        For data with the Hurst exponent ≈ 0, i.e., strongly anticorrelated, a
+    stat: bool (default = False)
+        Calculates the standard deviation associated with each segment's
+        averaging.
+
+    extensions: list (default = 'None')
+        Include some of the recent added functionalities to DFA and MFDFA.
+        Currently implemented are:
+            ``'eDFA'`` - A method to evaluate the strength of multifractality.
+
+    modified: bool (default = False)
+        For data with the Hurst index ≈ 0, i.e., strongly anticorrelated, a
         standard MFDFA will result in inacurate results, thus a further
         integration of the timeseries yields a modified scaling coefficient.
 
@@ -107,7 +116,7 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
 
     # Assert if timeseries is 1 dimensional
     if timeseries.ndim > 1:
-        assert timeseries.shape[1] == 1, "Timeseries needs to be 1 dimensional"
+        assert timeseries.shape[1] == 1, "Timeseries needs     f = np.empty((0, q.size))to be 1 dimensional"
 
     timeseries = timeseries.reshape(-1,1)
     # Size of array
@@ -134,6 +143,12 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
 
     # Return f of (fractal)-variances
     f = np.empty((0, q.size))
+
+    if stat == True:
+        f_std = np.empty((0, q.size))
+
+    if 'eDFA' in extensions:
+        f_eDFA = np.empty((0, q.size))
 
     # Loop over elements in lag
     # Notice that given one has to slip the timeseries into diferent segments of
@@ -171,13 +186,56 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         # Caculate the Multi-Fractal (Non)-Detrended Fluctuation Analysis
         f = np.append(f,
               np.float_power(
-                np.mean( np.float_power(F, q / 2), axis = 1) / 2,
-              1 / q.T)
-              + np.float_power(
-                np.mean( np.float_power(F_r, q / 2), axis = 1) / 2,
+                np.mean(np.float_power(F, q / 2), axis = 1) / 2,
               1 / q.T),
             axis = 0)
 
-    return lag, f
+        # Caculate standard deviation associated with each mean
+        if stat == True:
+            f_std = np.append(f_std,
+                  np.float_power(
+                    np.std(np.float_power(F, q / 2), axis = 1) / 2,
+                  1 / q.T),
+                axis = 0)
+
+        if 'eDFA' in extensions:
+            f_eDFA = np.append(f_eDFA, eDFA(F))
+
+
+    if stat == False:
+        return lag, f
+    if stat == True:
+        return lag, f, f_std
+
+def eDFA(F: np.ndarray) -> np.ndarray:
+    """
+    In the reference indicated below a measure of nonstationarity was added by
+    including a subsequent calculation of the extrema of the DFA. Denote
+    :math:`dF_q^2(s)` the difference of the extrema at each segment, i.e.,
+
+    .. math::
+
+        dF_q^2(s) = \max[F_q^2(s)] - \min[F_q^2(s)]
+
+    Parameters
+    ----------
+    F: np.ndarray
+        Fluctuation function
+
+    Returns
+    -------
+    res: np.ndarray
+        Difference of `max` and `min`.
+
+    References
+    ----------
+    'Detrended fluctuation analysis of cerebrovascular responses to abrupt
+    changes in peripheral arterial pressure in rats', A.N. Pavlov, A.S.
+    Abdurashitov, A.A. Koronovskii, Jr., O.N. Pavlova, O.V.
+    Semyachkina-Glushkovskaya, J. Kurths, CNSNS 105232,
+    doi:10.1016/j.cnsns.2020.105232
+    """
+
+    return np.max(F) - np.min(F)
 
 # TODO: Add log calculator for q ≈ 0
