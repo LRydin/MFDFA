@@ -6,12 +6,12 @@ Multifractal Detrended Fluctuation Analysis `MFDFA` is a model-independent metho
 `DFA` was first developed by Peng *et al.*<sup>1</sup> and later extended to study multifractality `MFDFA` by Kandelhardt *et al.*<sup>2</sup>.
 
 # Installation
-For now `MFDFA` is on the test PyPI system, so you can install it via
+To install MFDFA you can simply use
 
 ```
-pip install -i https://test.pypi.org/simple/ MFDFA
+pip install MFDFA
 ```
-On your favourite editor simply import `MFDFA` as
+And on your favourite editor simply import `MFDFA` as
 ```python
 from MFDFA import MFDFA
 ```
