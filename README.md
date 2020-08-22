@@ -1,4 +1,11 @@
-[![DOI](https://zenodo.org/badge/224135077.svg)](https://zenodo.org/badge/latestdoi/224135077) [![Documentation Status](https://readthedocs.org/projects/mfdfa/badge/?version=latest)](https://mfdfa.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.org/LRydin/MFDFA.svg?branch=master)](https://travis-ci.org/LRydin/MFDFA) [![codecov](https://codecov.io/gh/LRydin/MFDFA/branch/master/graph/badge.svg)](https://codecov.io/gh/LRydin/MFDFA)
+[![DOI](https://zenodo.org/badge/224135077.svg)](https://zenodo.org/badge/latestdoi/224135077)
+
+![PyPI - License](https://img.shields.io/pypi/l/MFDFA)
+![PyPI](https://img.shields.io/pypi/v/MFDFA)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/MFDFA)
+
+
+[![Documentation Status](https://readthedocs.org/projects/mfdfa/badge/?version=latest)](https://mfdfa.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.org/LRydin/MFDFA.svg?branch=master)](https://travis-ci.org/LRydin/MFDFA) [![codecov](https://codecov.io/gh/LRydin/MFDFA/branch/master/graph/badge.svg)](https://codecov.io/gh/LRydin/MFDFA)
 
 
 # MFDFA
