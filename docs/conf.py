@@ -26,8 +26,8 @@ copyright = '2019-2020 Leonardo Rydin'
 author = 'Leonardo Rydin'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2'
-version = '0.2'
+release = '0.3'
+version = '0.3'
 
 
 # -- General configuration ---------------------------------------------------

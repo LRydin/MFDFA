@@ -3,9 +3,7 @@ import numpy as np
 from numpy.polynomial.polynomial import polyfit
 import matplotlib.pyplot as plt
 
-from MFDFA import MFDFA
-from MFDFA import fgn
-
+import MFDFA as MFDFA
 
 # %% Lets take a fractional Ornstein–Uhlenbeck process Xₜ with a time-dependent
 # diffusion or volatility σₜ, some drift of mean reverting term θ(Xₜ), and
@@ -16,8 +14,8 @@ from MFDFA import fgn
 # Generate some path with a simple Euler–Maruyama integrator
 
 # Integration time and time sampling
-t_final = 100
-delta_t = 0.001
+t_final = 1000
+delta_t = 0.01
 
 # The parameters θ and σ
 theta = 1
@@ -30,10 +28,10 @@ time = np.arange(0, t_final, delta_t)
 X = np.zeros(time.size)
 
 # Lets use a positively correlated noise H > 1/2
-H = 0.7
+H = 0.5
 
 # Generate the fractional Gaussian noise
-dw = (t_final ** H) * fgn(time.size, H = H)
+dw = (t_final ** H) * MFDFA.fgn(time.size, H = H)
 
 # Integrate the process
 for i in range(1,time.size):
@@ -42,25 +40,24 @@ for i in range(1,time.size):
 # Plot the path
 plt.plot(time, X)
 
+
 # %% MFDFA
 # Select the segment lengths s, denoted lag here
-lag = np.unique(np.logspace(0, np.log10(X.size // 100), 25).astype(int)+1)
+lag = np.unique(np.logspace(0, np.log10(X.size // 10), 25).astype(int)+1)
 
 # q-variations to calculate
-q = np.linspace(1,10,10)
+q = 2
 
-# dfa records the fluctuation function, order = 1 is the order of the polynomial
-# fittings used, i.e., DFA1 in this case
-lag, dfa = MFDFA(X, lag, q = q, order = 1)
-
-# check Nondetrended MFFA
-lag_noDetrend, dfa_noDetrend = MFDFA(X, lag, q = q, order = 0)
+# dfa records the fluctuation function using the EMD as a detrending mechanims.
+lag, dfa, dfa_std, e_dfa = MFDFA.MFDFA(X, lag, q = q, order = 1, stat = True, extensions = {"eDFA": True})
 
 # %% Plots
 # Visualise the results in a log-log plot
-plt.loglog(lag, dfa, '.');
-plt.loglog(lag_noDetrend, dfa_noDetrend, '.');
+plt.loglog(lag, dfa, '-');
+plt.loglog(lag, dfa + dfa_std, '--');
+plt.loglog(lag, e_dfa, 'o-');
 
 # %%
 # Extract the slopes and compare with H + 1, i.e., 1.7.
-polyfit(np.log(lag[:]),np.log(dfa[:]),1)[1]
+polyfit(np.log(lag)[:10],np.log(dfa)[:10],1)[1]
+polyfit(np.log(lag)[:10],np.log(e_dfa)[:10],1)[1]
