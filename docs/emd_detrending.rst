@@ -40,4 +40,4 @@ To now perform the multifractal detrended fluctuation analysis, simply insert th
 
    # Obtain the (MF)DFA by declaring the IMFs to subtract
    # in a list in the dictionary of the extensions
-   lag, dfa = MFDFA(y, lag = lag, dict={"EMD": [6,7,8])
+   lag, dfa = MFDFA(y, lag = lag, extensions = {"EMD": [6,7,8]})

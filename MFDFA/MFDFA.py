@@ -84,7 +84,7 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         starts from ``0``. Will enforce ``order = 0`` since there is no need
         for a polynomial detrending.
      - ``eDFA``: bool (default ``False``)
-        A method to evaluate the strength of multifractality. Call function
+        A method to evaluate the strength of multifractality. Calls function
         `eDFA()`.
 
     Returns
@@ -162,17 +162,18 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
             order = 0
 
     # Loop over elements in lag
-    # Notice that given one has to slip the timeseries into diferent segments of
-    # length lag(), so some elements at the end of the array might be missing.
-    # The same procedure it run in reverse, were elements at the begining of the
-    # series are discared instead
+    # Notice that given one has to split the timeseries into different segments
+    # of length lag(), some elements at the end of the array might be
+    # missing. The same procedure is run in reverse, where elements at the
+    # begining of the series are discarded instead.
     for i in lag:
 
         # Reshape into (N/lag, lag)
         Y_ = Y[:N - N % i].reshape((N - N % i) // i, i)
         Y_r = Y[N % i:].reshape((N - N % i) // i, i)
 
-        # If order = 0 one gets simply a Fluctuation Analysis (FA)
+        # If order = 0 one gets simply a Fluctuation Analysis (FA), or one is
+        # using the EMD setting, and the data is detrended.
         if order == 0:
             # Skip detrending
             F = np.append( np.var(Y_, axis=1), np.var(Y_r, axis=1) )
@@ -198,10 +199,10 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         # Caculate standard deviation associated with each mean
         if stat == True:
             f_std = np.append(f_std,
-                  np.float_power(
-                    np.std(np.float_power(F, q / 2), axis = 1),
-                  1 / q.T),
-                axis = 0)
+                      np.float_power(
+                        np.std(np.float_power(F, q / 2), axis = 1),
+                      1 / q.T),
+                    axis = 0)
 
         if ('eDFA', True) in extensions.items():
             f_eDFA = np.append(f_eDFA, eDFA(F))
@@ -214,14 +215,14 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
             return lag, f
     if stat == True:
         if ('eDFA', True) in extensions.items():
-            return lag, f, f_std, np.vstack(f_eDFA) 
+            return lag, f, f_std, np.vstack(f_eDFA)
         else:
             return lag, f, f_std
 
 def eDFA(F: np.ndarray) -> np.ndarray:
     """
     In the reference indicated below a measure of nonstationarity was added by
-    including a subsequent calculation of the extrema of the DFA. Denote
+    including a subsequent calculation of the extrema of the DFA. Denoted
     :math:`dF_q^2(s)` the difference of the extrema at each segment, i.e.,
 
     .. math::

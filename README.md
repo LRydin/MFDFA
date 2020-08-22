@@ -18,7 +18,7 @@ from MFDFA import MFDFA
 There is an added library `fgn` to generate fractional Gaussian noise.
 
 # The `MFDFA` library
-The `MFDFA` library is a standalone `numpy`-dependent only library to study self-similarity and factality in stochastic processes. It is designed take advantage of `numpy`'s `polynomial` package, thus scales well with several CPUs.
+`MFDFA` basis is solely dependent on `numpy`, especially `numpy`'s `polynomial`. In version 0.3 a [Empirical Mode Decomposition](https://en.wikipedia.org/wiki/Hilbert%E2%80%93Huang_transform) method was added for an alternative method of detrending timeseries, relying on [Dawid Laszuk's](https://github.com/laszukdawid/PyEMD) `PyEMD`.
 
 # Employing the `MFDFA` library
 
@@ -95,17 +95,13 @@ np.polyfit(np.log(lag[:15]), np.log(dfa[:15]),1)[0]
 <img src="/other/fig1.png" title="MFDFA of a fractional Ornstein–Uhlenbeck process" height="250"/>
 
 
-
 ## Uncovering multifractality in stochastic processes
 `MFDFA`, as an extension to `DFA`, was developed to uncover if a given process is mono or multi fractal.
 Let `Xₜ` be a multi fractal stochastic process. This mean `Xₜ` scales with some function alpha(t) as `Xcₜ = |c|alpha(t) Xₜ`.
 With the help of taking different powers variations of the `DFA`, one we can distinguish monofractal and multifractal processes.
 
-### An example of multifractal behaviour
-To be continued
-
-
 # Changelog
+- Version 0.3 - Adding EMD detrending. First release. PyPI code.
 - Version 0.2 - Removed experimental features. Added documentation
 - Version 0.1 - Uploaded initial working code
 
@@ -119,7 +115,8 @@ This package abides to a [Conduct of Fairness](contributions.md).
 This library has been submitted for publication at [The Journal of Open Source Software](https://joss.theoj.org/) in December 2019. It was rejected. The review process can be found [here on GitHub](https://github.com/openjournals/joss-reviews/issues/1966). The plan is to extend the library and find another publisher.
 
 ### History
-This project was started in 2019 at the [Department of Mathematics, University of Oslo](https://www.mn.uio.no/math/english/research/groups/risk-stochastics/) in the Risk and Stochastics section by Leonardo Rydin Gorjão and is supported by Dirk Witthaut and the [Institute of Energy and Climate Research Systems Analysis and Technology Evaluation](https://www.fz-juelich.de/iek/iek-ste/EN/Home/home_node.html). I'm very thankful to all the folk in Section 3 in the Department of Mathematics, University of Oslo, for helping me getting around the world of stochastic processes: Dennis, Anton, Michele, Fabian, Marc, Prof. Benth and Prof. di Nunno.
+This project was started in 2019 at the [Faculty of Mathematics, University of Oslo](https://www.mn.uio.no/math/english/research/groups/risk-stochastics/) in the Risk and Stochastics section by Leonardo Rydin Gorjão and is supported by Dirk Witthaut and the [Institute of Energy and Climate Research Systems Analysis and Technology Evaluation](https://www.fz-juelich.de/iek/iek-ste/EN/Home/home_node.html). I'm very thankful to all the folk in Section 3 in the Faculty of Mathematics, University of Oslo, for helping me getting around the world of stochastic processes: Dennis, Anton, Michele, Fabian, Marc, Prof. Benth and Prof. di Nunno. In April 2020 Galib Hassan joined in extending `MFDFA`, particularly the implementation of EMD.
+
 
 ### Funding
 Helmholtz Association Initiative *Energy System 2050 - A Contribution of the Research Field Energy* and the grant No. VH-NG-1025, *STORM - Stochastics for Time-Space Risk Models* project of the Research Council of Norway (RCN) No. 274410, and the *E-ON Stipendienfonds*.
