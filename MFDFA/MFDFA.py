@@ -128,9 +128,10 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
     # Size of array
     N = timeseries.shape[0]
 
-    # Assert window is int and > 0
-    assert isinstance(window, int), "'window' is not integer"
-    assert window > 0, "'window' is not > 0"
+    # Assert window is given, it is int and > 0
+    if window != False:
+        assert isinstance(window, int), "'window' is not integer"
+        assert window > 0, "'window' is not > 0"
 
     # Fractal powers as floats
     q = np.asarray_chkfinite(q, dtype = float)
