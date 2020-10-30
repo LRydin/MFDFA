@@ -22,28 +22,53 @@ def test_MFDFA():
             assert dfa.ndim == 2, "Output is not 2 dimensional"
             assert dfa.shape[1] <= q.shape[0], "Output shape mismatch"
 
+            # Testing conventional MFDFA with stats
+            lag, dfa, dfa_std = MFDFA(X, lag = lag, q = q, order = 2,
+              stat = True)
+
+            assert dfa.ndim == 2, "Output is not 2 dimensional"
+            assert dfa.shape[1] <= q.shape[0], "Output shape mismatch"
+
+            # Testing modified = True option
             lag, dfa, dfa_std = MFDFA(X, lag = lag, q = q, order = 2,
               modified = True, stat = True)
 
             assert dfa.ndim == 2, "Output is not 2 dimensional"
             assert dfa.shape[1] <= q.shape[0], "Output shape mismatch"
 
+            # Testing eDFA extension
             lag, dfa, edfa = MFDFA(X, lag = lag, q = q, order = 3,
-              modified = True, stat = False, extensions = {'eDFA':True})
+              stat = False, extensions = {'eDFA':True})
 
             assert dfa.ndim == 2, "Output is not 2 dimensional"
             assert edfa.ndim == 2, "Output is not 2 dimensional"
             assert dfa.shape[1] <= q.shape[0], "Output shape mismatch"
 
+            # Testing EMD extension
             lag, dfa = MFDFA(X, lag = lag, q = q, order = 0,
-              modified = True, stat = False, extensions = {'EMD': [0]})
+              stat = False, extensions = {'EMD': [0]})
 
             assert dfa.ndim == 2, "Output is not 2 dimensional"
             assert dfa.shape[1] <= q.shape[0], "Output shape mismatch"
 
+            # Testing EMD and eDFA extensions together
             lag, dfa, edfa = MFDFA(X, lag = lag, q = q, order = 1,
-              modified = True, stat = False,
-              extensions = {'eDFA':True, 'EMD': [0]})
+              stat = False, extensions = {'eDFA':True, 'EMD': [0]})
+
+            assert dfa.ndim == 2, "Output is not 2 dimensional"
+            assert edfa.ndim == 2, "Output is not 2 dimensional"
+            assert dfa.shape[1] <= q.shape[0], "Output shape mismatch"
+
+            # Testing moving window
+            lag, dfa = MFDFA(X, lag = lag, q = q, order = 1,
+              stat = False, extensions = {'window': 5})
+
+            assert dfa.ndim == 2, "Output is not 2 dimensional"
+            assert dfa.shape[1] <= q.shape[0], "Output shape mismatch"
+
+            # Testing moving window and eDFA with stats = True
+            lag, dfa, dfa_std, edfa = MFDFA(X, lag = lag, q = q, order = 1,
+              stat = True, extensions = {'eDFA':True, 'window': 5})
 
             assert dfa.ndim == 2, "Output is not 2 dimensional"
             assert edfa.ndim == 2, "Output is not 2 dimensional"
