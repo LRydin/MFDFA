@@ -7,10 +7,11 @@
 
 import numpy as np
 from numpy.polynomial.polynomial import polyfit, polyval
+from .emddetrender import detrendedtimeseries
 
 def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
-          q: np.ndarray=2, stat: bool=False, extensions: list=['None'],
-          modified: bool=False) -> np.ndarray:
+          q: np.ndarray=2, stat: bool=False, modified: bool=False,
+          extensions: dict={"EMD":False, "eDFA":False}) -> np.ndarray:
     """
     Multifractal Detrended Fluctuation Analysis of timeseries. MFDFA generates
     a fluctuation function F²(q,s), with s the segment size and q the q-powers,
@@ -58,7 +59,9 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
     order: int (default = 1)
         The order of the polynomials to approximate. ``order = 1`` is the DFA1,
         which is a least-square fit of the data with a first order polynomial (a
-        line), ``order = 2`` is a second-order polynomial, etc.
+        line), ``order = 2`` is a second-order polynomial, etc..
+        ``order = 0`` skips the detrending process and hence gives the
+        nondetrended fluctuation functions, i.e., simply Fluctuation Analysis.
 
     q: np.ndarray (default = 2)
         Fractal exponent to calculate. Array in ``[-10,10]``. The values = 0
@@ -69,15 +72,20 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         Calculates the standard deviation associated with each segment's
         averaging.
 
-    extensions: list (default = 'None')
-        Include some of the recent added functionalities to DFA and MFDFA.
-        Currently implemented are:
-            ``'eDFA'`` - A method to evaluate the strength of multifractality.
-
     modified: bool (default = False)
         For data with the Hurst index ≈ 0, i.e., strongly anticorrelated, a
         standard MFDFA will result in inacurate results, thus a further
         integration of the timeseries yields a modified scaling coefficient.
+
+    extensions: dict
+     - ``EMD``: list (default ``False``)
+        If not ``None``, requires a list of indices of the user-chosen IMFs
+        obtained from an (externally performed) EMD analysis. The indexing
+        starts from ``0``. Will enforce ``order = 0`` since there is no need
+        for a polynomial detrending.
+     - ``eDFA``: bool (default ``False``)
+        A method to evaluate the strength of multifractality. Calls function
+        `eDFA()`.
 
     Returns
     -------
@@ -86,14 +94,18 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         entries > order + 1
 
     f: np.ndarray
-        An array of shape ``(size(lag), size(q))`` of variances over the
-        indicated ``lag`` windows and the indicated ``q``-fractal powers.
+        A array of shape (size(lag),size(q)) of variances over the indicated
+        lag windows and the indicated q-fractal powers.
 
-    f_std: np.ndarray
-        Present only if ``stat = True``. An array of shape
-        ``(size(lag), size(q))`` of the standard deviations associated with each
-        averaging of ``f``, over the indicated ``lag`` windows and the indicated
-        ``q``-fractal powers.
+    References
+    ----------
+    .. [Peng1994] C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons, H. E.
+        Stanley, and A. L. Goldberger. "Mosaic organization of DNA nucleotides."
+        Phys. Rev. E, 49(2), 1685–1689, 1994.
+    .. [Kantelhardt2002] J. W. Kantelhardt, S. A. Zschiegner, E.
+        Koscielny-Bunde, S. Havlin, A. Bunde, H. E. Stanley. "Multifractal
+        detrended fluctuation analysis of nonstationary time series." Physica A,
+        316(1-4), 87–114, 2002.
     """
 
     # Force lag to be ints, ensure lag > order + 1
@@ -102,7 +114,7 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
 
     # Assert if timeseries is 1 dimensional
     if timeseries.ndim > 1:
-        assert timeseries.shape[1] == 1, "Timeseries needs     f = np.empty((0, q.size))to be 1 dimensional"
+        assert timeseries.shape[1] == 1, "Timeseries needs to be 1 dimensional"
 
     timeseries = timeseries.reshape(-1,1)
     # Size of array
@@ -133,57 +145,84 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
     if stat == True:
         f_std = np.empty((0, q.size))
 
-    if 'eDFA' in extensions:
+
+    if ('eDFA', True) in extensions.items():
         f_eDFA = np.empty((0, q.size))
 
+    if 'EMD' in extensions:
+        if extensions['EMD'] != False:
+            # assert the dictionary entry is a list
+            assert isinstance(extensions['EMD'], list), 'list IMFs to detrend'
+
+            # Detrending of the timeseries using EMD with given IMFs in a list
+            Y = detrendedtimeseries(Y, extensions["EMD"])
+
+            # Force order = 0 since the data is detrended with EMD, i.e., no
+            # need to do polynomial fittings anymore
+            order = 0
+
     # Loop over elements in lag
-    # Notice that given one has to slip the timeseries into diferent segments of
-    # length lag(), so some elements at the end of the array might be missing.
-    # The same procedure it run in reverse, were elements at the begining of the
-    # series are discared instead
+    # Notice that given one has to split the timeseries into different segments
+    # of length lag(), some elements at the end of the array might be
+    # missing. The same procedure is run in reverse, where elements at the
+    # begining of the series are discarded instead.
     for i in lag:
+
         # Reshape into (N/lag, lag)
         Y_ = Y[:N - N % i].reshape((N - N % i) // i, i)
         Y_r = Y[N % i:].reshape((N - N % i) // i, i)
 
-        # Perform a polynomial fit to each segments
-        p = polyfit(X[:i], Y_.T, order)
-        p_r = polyfit(X[:i], Y_r.T, order)
+        # If order = 0 one gets simply a Fluctuation Analysis (FA), or one is
+        # using the EMD setting, and the data is detrended.
+        if order == 0:
+            # Skip detrending
+            F = np.append( np.var(Y_, axis=1), np.var(Y_r, axis=1) )
 
-        # Subtract the trend from the fit and calculate the variance
-        F = np.append(
+        else:
+            # Perform a polynomial fit to each segments
+            p = polyfit(X[:i], Y_.T, order)
+            p_r = polyfit(X[:i], Y_r.T, order)
+
+            # Subtract the trend from the fit and calculate the variance
+            F = np.append(
                 np.var(Y_ - polyval(X[:i], p), axis = 1),
                 np.var(Y_r - polyval(X[:i], p_r), axis = 1)
             )
 
-        # Caculate the Multi-Fractal Detrended Fluctuation Analysis
+        # Caculate the Multi-Fractal (Non)-Detrended Fluctuation Analysis
         f = np.append(f,
               np.float_power(
-                np.mean(np.float_power(F, q / 2), axis = 1) / 2,
+                np.mean(np.float_power(F, q / 2), axis = 1),
               1 / q.T),
             axis = 0)
 
         # Caculate standard deviation associated with each mean
         if stat == True:
             f_std = np.append(f_std,
-                  np.float_power(
-                    np.std(np.float_power(F, q / 2), axis = 1) / 2,
-                  1 / q.T),
-                axis = 0)
+                      np.float_power(
+                        np.std(np.float_power(F, q / 2), axis = 1),
+                      1 / q.T),
+                    axis = 0)
 
-        if 'eDFA' in extensions:
+        if ('eDFA', True) in extensions.items():
             f_eDFA = np.append(f_eDFA, eDFA(F))
 
 
     if stat == False:
-        return lag, f
+        if ('eDFA', True) in extensions.items():
+            return lag, f, np.vstack(f_eDFA)
+        else:
+            return lag, f
     if stat == True:
-        return lag, f, f_std
+        if ('eDFA', True) in extensions.items():
+            return lag, f, f_std, np.vstack(f_eDFA)
+        else:
+            return lag, f, f_std
 
 def eDFA(F: np.ndarray) -> np.ndarray:
     """
     In the reference indicated below a measure of nonstationarity was added by
-    including a subsequent calculation of the extrema of the DFA. Denote
+    including a subsequent calculation of the extrema of the DFA. Denoted
     :math:`dF_q^2(s)` the difference of the extrema at each segment, i.e.,
 
     .. math::
@@ -193,20 +232,23 @@ def eDFA(F: np.ndarray) -> np.ndarray:
     Parameters
     ----------
     F: np.ndarray
-        Fluctuation function
+        Fluctuation function given by the ``MFDFA()``.
 
     Returns
     -------
     res: np.ndarray
         Difference of `max` and `min`.
 
+    Notes
+    -----
+    .. versionadded:: 0.3
+
     References
     ----------
-    'Detrended fluctuation analysis of cerebrovascular responses to abrupt
-    changes in peripheral arterial pressure in rats', A.N. Pavlov, A.S.
-    Abdurashitov, A.A. Koronovskii, Jr., O.N. Pavlova, O.V.
-    Semyachkina-Glushkovskaya, J. Kurths, CNSNS 105232,
-    doi:10.1016/j.cnsns.2020.105232
+    .. [Pavlov2020] A. N. Pavlov, A. S. Abdurashitov, A. A. Koronovskii Jr., O.
+        N. Pavlova, O. V. Semyachkina-Glushkovskaya, and J. Kurths. "Detrended
+        fluctuation analysis of cerebrovascular responses to abrupt changes in
+        peripheral arterial pressure in rats." CNSNS 85, 105232, 2020
     """
 
     return np.max(F) - np.min(F)

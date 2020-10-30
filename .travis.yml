@@ -1,11 +1,14 @@
 language: python
 python:
-  - "3.4"
-  - "3.5"
+#  - "3.4"
+#  - "3.5"
   - "3.6"
   - "3.7"
-  - "nightly"
+#  - "nightly"
 # command to install dependencies
+
+before_install:
+  - pip install --upgrade pip setuptools wheel
 
 install:
   - pip install coverage

@@ -2,25 +2,15 @@ MFDFA's documentation
 =====================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
 :code:`MFDFA` is a python implementation of Multifractal Detrended Fluctuation Analysis, first developed by by Peng *et al.* ¹ and later extended to study multifractality :code:`MFDFA` by Kandelhardt *et al.* ².
-
 
 .. include:: installation.rst
 
 .. include:: 1dprocess.rst
 
-Table of Content
-================
-
-.. toctree::
-   :maxdepth: 3
-
-   installation
-   1dprocess
-   functions/index
-   license
+.. include:: extensions.rst
 
 Literature
 ==========
@@ -34,3 +24,15 @@ Funding
 =======
 
 Helmholtz Association Initiative Energy System 2050 - A Contribution of the Research Field Energy and the grant No. VH-NG-1025, STORM - Stochastics for Time-Space Risk Models project of the Research Council of Norway (RCN) No. 274410, and the E-ON Stipendienfonds.
+
+Table of Content
+================
+
+.. toctree::
+   :maxdepth: 3
+
+   installation
+   1dprocess
+   extensions
+   functions/index
+   license
