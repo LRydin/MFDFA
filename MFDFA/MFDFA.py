@@ -1,6 +1,4 @@
-## ![PyPI - License](https://img.shields.io/pypi/l/MFDFA)
-![PyPI](https://img.shields.io/pypi/v/MFDFA)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/MFDFA)This is based on Kantelhardt, J. W., Zschiegner, S. A., Koscielny-Bunde, E.,
+## This is based on Kantelhardt, J. W., Zschiegner, S. A., Koscielny-Bunde, E.,
 # Havlin, S., Bunde, A., & Stanley, H. E., Multifractal detrended fluctuation
 # analysis of nonstationary time series. Physica A, 316(1-4), 87-114, 2002 as
 # well as on nolds (https://github.com/CSchoel/nolds) and on work by  Espen A.
