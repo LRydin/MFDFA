@@ -61,7 +61,15 @@ def test_MFDFA():
 
             # Testing moving window
             lag, dfa = MFDFA(X, lag = lag, q = q, order = 1,
-              window = 5, stat = False)
+              stat = False, extensions = {'window': 5})
 
             assert dfa.ndim == 2, "Output is not 2 dimensional"
+            assert dfa.shape[1] <= q.shape[0], "Output shape mismatch"
+
+            # Testing moving window and eDFA with stats = True
+            lag, dfa, dfa_std, edfa = MFDFA(X, lag = lag, q = q, order = 1,
+              stat = True, extensions = {'eDFA':True, 'window': 5})
+
+            assert dfa.ndim == 2, "Output is not 2 dimensional"
+            assert edfa.ndim == 2, "Output is not 2 dimensional"
             assert dfa.shape[1] <= q.shape[0], "Output shape mismatch"

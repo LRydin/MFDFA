@@ -10,9 +10,8 @@ from numpy.polynomial.polynomial import polyfit, polyval
 from .emddetrender import detrendedtimeseries
 
 def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
-          q: np.ndarray=2, window: bool=False, stat: bool=False,
-          modified: bool=False,
-          extensions: dict={"EMD":False, "eDFA":False}) -> np.ndarray:
+          q: np.ndarray=2, stat: bool=False, modified: bool=False,
+          extensions: dict={'EMD':False, 'eDFA':False, 'window':False}) -> np.ndarray:
     """
     Multifractal Detrended Fluctuation Analysis of timeseries. MFDFA generates
     a fluctuation function F²(q,s), with s the segment size and q the q-powers,
@@ -69,12 +68,6 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
         will be removed, since the code does not converge there. ``q = 2`` is
         the standard Detrended Fluctuation Analysis as is set a default.
 
-    window: int (default = False)
-        int > 0 with the number of steps the window shoud move over the data.
-        ``window = 1`` will move window by ``1`` step. Since the timeseries is
-        segmented at each lag lenght, any window choise > lag is only segmented
-        once.
-
     stat: bool (default = False)
         Calculates the standard deviation associated with each segment's
         averaging.
@@ -93,6 +86,11 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
      - ``eDFA``: bool (default ``False``)
         A method to evaluate the strength of multifractality. Calls function
         `eDFA()`.
+     - ``window``: bool (default ``False``)
+        A moving window for smaller timeseries. Set ``window`` as int > 0 with
+        the number of steps the window shoud move over the data. ``window = 1``
+        will move window by ``1`` step. Since the timeseries is segmented at
+        each lag lenght, any window choise > lag is only segmented once.
 
     Returns
     -------
@@ -128,10 +126,14 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
     # Size of array
     N = timeseries.shape[0]
 
-    # Assert window is given, it is int and > 0
-    if window != False:
-        assert isinstance(window, int), "'window' is not integer"
-        assert window > 0, "'window' is not > 0"
+    # Assert if window is given, that it is int and > 0
+    window = False
+    if 'window' in extensions:
+        if extensions['window'] != False:
+            window = extensions['window']
+            assert isinstance(window, int), "'window' is not integer"
+            assert window > 0, "'window' is not > 0"
+
 
     # Fractal powers as floats
     q = np.asarray_chkfinite(q, dtype = float)
@@ -168,7 +170,7 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray=None, order: int=1,
             assert isinstance(extensions['EMD'], list), 'list IMFs to detrend'
 
             # Detrending of the timeseries using EMD with given IMFs in a list
-            Y = detrendedtimeseries(Y, extensions["EMD"])
+            Y = detrendedtimeseries(Y, extensions['EMD'])
 
             # Force order = 0 since the data is detrended with EMD, i.e., no
             # need to do polynomial fittings anymore
