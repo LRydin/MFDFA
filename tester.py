@@ -24,7 +24,7 @@ sigma = 0.5
 # The time array of the trajectory
 time = np.arange(0, t_final, delta_t)
 
-# Initialise the array y
+# Initialise the array X
 X = np.zeros(time.size)
 
 # Lets use a positively correlated noise H > 1/2
@@ -61,3 +61,37 @@ plt.loglog(lag, e_dfa, 'o-');
 # Extract the slopes and compare with H + 1, i.e., 1.7.
 polyfit(np.log(lag)[:10],np.log(dfa)[:10],1)[1]
 polyfit(np.log(lag)[:10],np.log(e_dfa)[:10],1)[1]
+
+
+# %% Lets try a more complicated multifractional Brownian motion Yₜ
+# with a time-dependent Hurst exponent Hₜ and some constant volatility σ
+#
+#                         dYₜ = σdBᴴₜ.
+#
+# With the same parameters as above, but a shorter timeseries
+
+# Integration time and time sampling
+t_final = 5
+delta_t = 0.001
+
+# The time array of the trajectory
+time = np.arange(0, t_final, delta_t)
+
+# The volatility σ
+sigma = 0.5
+
+# Initialise the array Y
+Y = np.zeros(time.size)
+
+# Define a callable function for the Hurst index
+def h(t):
+    return 0.5 - 0.25 * np.sin(2*t)
+
+# Generate the fractional Gaussian noise
+dB = MFDFA.mgn(time, H = h)
+
+# Integrate the process (i.e., simply use cumsum)
+Y =  np.cumsum(sigma * dB)
+
+# Plot the path
+plt.plot(time, dB)
