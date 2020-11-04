@@ -44,14 +44,15 @@ def mgn(t: np.ndarray, H: callable) -> np.ndarray:
     # Size of arrays
     N = t.size
 
-    # Preallocated mbm
-    mbm = np.zeros_like(t)
 
     # Generate a Gaussian noise
     gn = np.random.normal(0.0, 1.0, N) * np.sqrt(dt)
 
     # Add additional endpoint to time
     t = np.append(t, t[-1] + dt)
+
+    # Preallocated mbm
+    mbm = np.zeros_like(t)
 
     # Generate local arrays for speedup
     h = 2 * H(t)
@@ -63,8 +64,7 @@ def mgn(t: np.ndarray, H: callable) -> np.ndarray:
             / gamma((h[k] / 2.) + 0.5)
         )
 
-        mbm[k-1] = np.sum(gn[:k-1] *  w[:k][::-1])
-    return mbm
+        mbm[k] = np.sum(gn[:k-1] *  w[:k][::-1])
 
     # TODO: Check for further speed-ups
     # TODO: Generalise for several outputs. Should be straightforward.

@@ -94,4 +94,4 @@ dB = MFDFA.mgn(time, H = h)
 Y =  np.cumsum(sigma * dB)
 
 # Plot the path
-plt.plot(time, dB)
+plt.plot(time, Y)
