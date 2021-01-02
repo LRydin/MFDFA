@@ -7,6 +7,13 @@
 [![Documentation Status](https://readthedocs.org/projects/mfdfa/badge/?version=latest)](https://mfdfa.readthedocs.io/en/latest/?badge=latest)
 
 
+### Preparation for version 0.4
+I have been deliberating over the presence of the Empirical Mode Decomposition [EMD](https://en.wikipedia.org/wiki/Hilbert%E2%80%93Huang_transform) in v0.3, i.e., the [PyEMD](https://github.com/laszukdawid/PyEMD) by [Dawid Laszuk](https://github.com/laszukdawid).
+The EMD package is phenomenal, but comprises an overhead of ~700 kb (and usually some additional packages).
+My plan now is to create a separate repository (likely to be named MFDFA-EMD) which adds the EMD functionality included in v0.3.
+
+The cause is simple: the original MFDFA is meant to be lightweight, i.e., depend only of `numpy`, so that one day maybe someone can make a parallel-isable version of it.
+
 # MFDFA
 Multifractal Detrended Fluctuation Analysis `MFDFA` is a model-independent method to uncover the self-similarity of a stochastic process or auto-regressive model.
 `DFA` was first developed by Peng *et al.*<sup>1</sup> and later extended to study multifractality `MFDFA` by Kandelhardt *et al.*<sup>2</sup>.
