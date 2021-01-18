@@ -2,8 +2,16 @@
 # Empirical Mode Decomposition algorithm', https://github.com/laszukdawid/PyEMD,
 # licenced under the Apache 2.0 Licencing.
 
-from PyEMD import EMD
+# from PyEMD import EMD
 import numpy as np
+
+# Check if PyEMD is installed
+try:
+    import PyEMD.EMD as _EMD
+except ImportError:
+    _EMD = False
+else:
+    _EMD = True
 
 def detrendedtimeseries(timeseries: np.ndarray, modes: list):
     """
@@ -42,6 +50,9 @@ def detrendedtimeseries(timeseries: np.ndarray, modes: list):
         Nonlinear Signal and Image Processing NSIP-03, Grado (I), June 2003.
     """
 
+    # Check if EMD-signal is installed
+    missing_library(_EMD)
+
     # Obtain Intrinsic Mode Functions (IMFs) using pyEMD
     IMF = IMFs(timeseries)
 
@@ -49,6 +60,7 @@ def detrendedtimeseries(timeseries: np.ndarray, modes: list):
     detrendedTimeseries = timeseries - np.sum(IMF[modes, :], axis = 0)
 
     return detrendedTimeseries
+
 
 def IMFs(timeseries: np.ndarray):
     """
@@ -62,7 +74,7 @@ def IMFs(timeseries: np.ndarray):
     Notes
     -----
     .. versionadded:: 0.3
-    
+
     Returns
     -------
     IMFs: np.ndarray
@@ -78,3 +90,14 @@ def IMFs(timeseries: np.ndarray):
 
     # Returns the IMFs as a (..., timeseries.size) numpy array.
     return IMFs
+
+
+def missing_library(lib):
+    """
+    Checks requirement for extra features.
+    """
+    if not _EMD:
+        raise ImportError(("PyEMD is required to do Empirical Mode "
+                           "decomposition. Please install PyEMD with 'pip "
+                           "install EMD-signal'.")
+                         )
