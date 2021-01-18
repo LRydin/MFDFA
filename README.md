@@ -107,6 +107,7 @@ Let `Xₜ` be a multi fractal stochastic process. This mean `Xₜ` scales with s
 With the help of taking different powers variations of the `DFA`, one we can distinguish monofractal and multifractal processes.
 
 # Changelog
+- Version 0.4 - EMD is now optional. Restored back compatibility: py3.3 to py3.9
 - Version 0.3 - Adding EMD detrending. First release. PyPI code.
 - Version 0.2 - Removed experimental features. Added documentation
 - Version 0.1 - Uploaded initial working code
@@ -125,7 +126,7 @@ This project was started in 2019 at the [Faculty of Mathematics, University of O
 
 
 ### Funding
-Helmholtz Association Initiative *Energy System 2050 - A Contribution of the Research Field Energy* and the grant No. VH-NG-1025, *STORM - Stochastics for Time-Space Risk Models* project of the Research Council of Norway (RCN) No. 274410, and the *E-ON Stipendienfonds*.
+Helmholtz Association Initiative *Energy System 2050 - A Contribution of the Research Field Energy* and the grant No. VH-NG-1025; *STORM - Stochastics for Time-Space Risk Models* project of the Research Council of Norway (RCN) No. 274410, and the *E-ON Stipendienfonds*.
 
 ### References
 <sup>1</sup>Peng, C.-K., Buldyrev, S. V., Havlin, S., Simons, M., Stanley, H. E., & Goldberger, A. L. (1994). *Mosaic organization of DNA nucleotides*. [Physical Review E, 49(2), 1685–1689](https://doi.org/10.1103/PhysRevE.49.1685)\

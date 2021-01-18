@@ -4,6 +4,14 @@ Employing Empirical Mode Decompositions for detrending
 `Empirical Mode Decomposition <https://en.wikipedia.org/wiki/Hilbert%E2%80%93Huang_transform>`_ (EMD), or maybe more correctly described, the Hilbert─Huang transform is a transformation analogous to a Fourier or Hilbert transform that decomposes a one-dimensional timeseries or signal into its Intrinsic Mode Functions (IMFs).
 For our purposes, we simply want to employ EMD to detrend a timeseries.
 
+.. warning::
+
+   To use this feature, you need to first install `PyEMD <https://github.com/laszukdawid/PyEMD>`_ (EMD-signal) with
+   
+   ::
+
+      pip install EMD-signal
+
 Understanding :code:`MFDFA`'s :code:`EMD` detrender
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

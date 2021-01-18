@@ -1,5 +1,5 @@
 # Contributions
-`MDFA` has lived so far out of collaborations. It welcomes reviews and ideas from everyone. If you want to share your ideas or report a bug, open an [issue](https://github.com/LRydin/KramersMoyal/issues) here on GitHub, or contact me directly: [leonardo.rydin"at"gmail.com](mailto:leonardo.rydin@gmail.com)
+`MFDFA` has lived so far out of collaborations. It welcomes reviews and ideas from everyone. If you want to share your ideas or report a bug, open an [issue](https://github.com/LRydin/KramersMoyal/issues) here on GitHub, or contact me directly: [leonardo.rydin"at"gmail.com](mailto:leonardo.rydin@gmail.com)
 
 I'm are happy to have you help me in furthering this project, helping me improve the code and documentation, make it more user-friendly, broadening its applicability, or devising other methodologies of implementation.
 

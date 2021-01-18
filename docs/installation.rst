@@ -1,14 +1,21 @@
 Installation
 ============
 
-For the moment the library is available from TestPyPI, so you can use
+:code:`MFDFA` is available from PyPI, so you can use
 
 ::
 
-   pip install -i https://test.pypi.org/simple/ MFDFA
+   pip install MFDFA
 
 Then on your favourite editor just use
 
 .. code:: python
 
    from MFDFA import MFDFA
+
+.. warning::
+   To use the extension to include Empirical Mode Decomposition detrending you will also need
+
+   ::
+
+      pip install EMD-signal
