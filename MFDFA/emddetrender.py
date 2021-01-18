@@ -12,6 +12,7 @@ except ImportError:
     _EMD = False
 else:
     _EMD = True
+    from PyEMD import EMD
 
 def detrendedtimeseries(timeseries: np.ndarray, modes: list):
     """
