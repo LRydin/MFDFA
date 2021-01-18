@@ -7,13 +7,6 @@
 [![Documentation Status](https://readthedocs.org/projects/mfdfa/badge/?version=latest)](https://mfdfa.readthedocs.io/en/latest/?badge=latest)
 
 
-### Preparation for version 0.4
-I have been deliberating over the presence of the Empirical Mode Decomposition [EMD](https://en.wikipedia.org/wiki/Hilbert%E2%80%93Huang_transform) in v0.3, i.e., the [PyEMD](https://github.com/laszukdawid/PyEMD) by [Dawid Laszuk](https://github.com/laszukdawid).
-The EMD package is phenomenal, but comprises an overhead of ~700 kb (and usually some additional packages).
-My plan now is to create a separate repository (likely to be named MFDFA-EMD) which adds the EMD functionality included in v0.3.
-
-The cause is simple: the original MFDFA is meant to be lightweight, i.e., depend only of `numpy`, so that one day maybe someone can make a parallel-isable version of it.
-
 # MFDFA
 Multifractal Detrended Fluctuation Analysis `MFDFA` is a model-independent method to uncover the self-similarity of a stochastic process or auto-regressive model.
 `DFA` was first developed by Peng *et al.*<sup>1</sup> and later extended to study multifractality `MFDFA` by Kandelhardt *et al.*<sup>2</sup>.
@@ -114,6 +107,7 @@ Let `Xₜ` be a multi fractal stochastic process. This mean `Xₜ` scales with s
 With the help of taking different powers variations of the `DFA`, one we can distinguish monofractal and multifractal processes.
 
 # Changelog
+- Version 0.4 - EMD is now optional. Restored back compatibility: py3.3 to py3.9
 - Version 0.3 - Adding EMD detrending. First release. PyPI code.
 - Version 0.2 - Removed experimental features. Added documentation
 - Version 0.1 - Uploaded initial working code
@@ -132,7 +126,7 @@ This project was started in 2019 at the [Faculty of Mathematics, University of O
 
 
 ### Funding
-Helmholtz Association Initiative *Energy System 2050 - A Contribution of the Research Field Energy* and the grant No. VH-NG-1025, *STORM - Stochastics for Time-Space Risk Models* project of the Research Council of Norway (RCN) No. 274410, and the *E-ON Stipendienfonds*.
+Helmholtz Association Initiative *Energy System 2050 - A Contribution of the Research Field Energy* and the grant No. VH-NG-1025; *STORM - Stochastics for Time-Space Risk Models* project of the Research Council of Norway (RCN) No. 274410, and the *E-ON Stipendienfonds*.
 
 ### References
 <sup>1</sup>Peng, C.-K., Buldyrev, S. V., Havlin, S., Simons, M., Stanley, H. E., & Goldberger, A. L. (1994). *Mosaic organization of DNA nucleotides*. [Physical Review E, 49(2), 1685–1689](https://doi.org/10.1103/PhysRevE.49.1685)\

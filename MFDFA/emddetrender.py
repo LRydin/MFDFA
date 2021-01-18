@@ -5,14 +5,7 @@
 # from PyEMD import EMD
 import numpy as np
 
-# Check if PyEMD is installed
-try:
-    import PyEMD.EMD as _EMD
-except ImportError:
-    _EMD = False
-else:
-    _EMD = True
-    from PyEMD import EMD
+# Import of PyEMD is called inside the function
 
 def detrendedtimeseries(timeseries: np.ndarray, modes: list):
     """
@@ -51,9 +44,6 @@ def detrendedtimeseries(timeseries: np.ndarray, modes: list):
         Nonlinear Signal and Image Processing NSIP-03, Grado (I), June 2003.
     """
 
-    # Check if EMD-signal is installed
-    missing_library(_EMD)
-
     # Obtain Intrinsic Mode Functions (IMFs) using pyEMD
     IMF = IMFs(timeseries)
 
@@ -83,6 +73,11 @@ def IMFs(timeseries: np.ndarray):
         These are of shape ``(..., timeseries.size)``, with the first dimension
         varying depending on the data. Last entry is the residuals.
     """
+
+    # Check if EMD-signal is installed
+    missing_library()
+    from PyEMD import EMD
+
     # Initiate pyEMD's EMD function
     emd = EMD()
 
@@ -93,11 +88,10 @@ def IMFs(timeseries: np.ndarray):
     return IMFs
 
 
-def missing_library(lib):
-    """
-    Checks requirement for extra features.
-    """
-    if not _EMD:
+def missing_library():
+    try:
+        import PyEMD.EMD as _EMD
+    except ImportError:
         raise ImportError(("PyEMD is required to do Empirical Mode "
                            "decomposition. Please install PyEMD with 'pip "
                            "install EMD-signal'.")
