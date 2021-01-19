@@ -49,7 +49,7 @@ To now utilise the :code:`MFDFA`, we take this exemplary process and run the (mu
 
    # Select a band of lags, which usually ranges from
    # very small segments of data, to very long ones, as
-   lag = np.logspace(0.7, 4, 30).astype(int)
+   lag = np.unique(np.logspace(0.5, 3, 100).astype(int))
    # Notice these must be ints, since these will segment
    # the data into chucks of lag size
 
