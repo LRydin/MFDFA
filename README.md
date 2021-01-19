@@ -11,6 +11,8 @@
 Multifractal Detrended Fluctuation Analysis `MFDFA` is a model-independent method to uncover the self-similarity of a stochastic process or auto-regressive model.
 `DFA` was first developed by Peng *et al.*<sup>1</sup> and later extended to study multifractality `MFDFA` by Kandelhardt *et al.*<sup>2</sup>.
 
+In the latest release there is as well added a moving window system, especially useful for short timeseries, a recent extension to DFA called *extended DFA*, and the extra feature of Empirical Mode Decomposition as detrending method.
+
 # Installation
 To install MFDFA you can simply use
 
@@ -29,6 +31,8 @@ There is an added library `fgn` to generate fractional Gaussian noise.
 # Employing the `MFDFA` library
 
 ## An exemplary one-dimensional fractional Ornstein–Uhlenbeck process
+The rationale here is simple: Numerically integrate a stochastic process in which we know exactly the fractal properties, characterised by the Hurst coefficient, and recover this with MFDFA.
+We will use a fractional Ornstein–Uhlenbeck, a commonly employ stochastic process with mean-reverting properties.
 For a more detailed explanation on how to integrate an Ornstein–Uhlenbeck process, see the [kramersmoyal's package](https://github.com/LRydin/KramersMoyal#a-one-dimensional-stochastic-process).
 You can also follow the [fOU.ipynb](/examples/fOU.ipynb)
 
@@ -70,7 +74,7 @@ To now utilise the `MFDFA`, we take this exemplary process and run the (multifra
 ```python
 # Select a band of lags, which usually ranges from
 # very small segments of data, to very long ones, as
-lag = np.logspace(0.7, 4, 30).astype(int)
+lag = np.unique(np.logspace(0.5, 3, 100).astype(int))
 # Notice these must be ints, since these will segment
 # the data into chucks of lag size
 
@@ -98,16 +102,14 @@ np.polyfit(np.log(lag[:15]), np.log(dfa[:15]),1)[0]
 # Now what you should obtain is: slope = H + 1
 ```
 
-<img src="/other/fig1.png" title="MFDFA of a fractional Ornstein–Uhlenbeck process" height="250"/>
+<img src="docs/_static/fig1.png" title="MFDFA of a fractional Ornstein–Uhlenbeck process" height="250"/>
 
 
 ## Uncovering multifractality in stochastic processes
-`MFDFA`, as an extension to `DFA`, was developed to uncover if a given process is mono or multi fractal.
-Let `Xₜ` be a multi fractal stochastic process. This mean `Xₜ` scales with some function alpha(t) as `Xcₜ = |c|alpha(t) Xₜ`.
-With the help of taking different powers variations of the `DFA`, one we can distinguish monofractal and multifractal processes.
+You can find more about multifractality in the [documentation](https://mfdfa.readthedocs.io/en/latest/1dLevy.html).
 
 # Changelog
-- Version 0.4 - EMD is now optional. Restored back compatibility: py3.3 to py3.9
+- Version 0.4 - EMD is now optional. Restored back compatibility: py3.3 to py3.9. For EMD py3.6 or larger is needed.
 - Version 0.3 - Adding EMD detrending. First release. PyPI code.
 - Version 0.2 - Removed experimental features. Added documentation
 - Version 0.1 - Uploaded initial working code
@@ -122,7 +124,7 @@ This package abides to a [Conduct of Fairness](contributions.md).
 This library has been submitted for publication at [The Journal of Open Source Software](https://joss.theoj.org/) in December 2019. It was rejected. The review process can be found [here on GitHub](https://github.com/openjournals/joss-reviews/issues/1966). The plan is to extend the library and find another publisher.
 
 ### History
-This project was started in 2019 at the [Faculty of Mathematics, University of Oslo](https://www.mn.uio.no/math/english/research/groups/risk-stochastics/) in the Risk and Stochastics section by Leonardo Rydin Gorjão and is supported by Dirk Witthaut and the [Institute of Energy and Climate Research Systems Analysis and Technology Evaluation](https://www.fz-juelich.de/iek/iek-ste/EN/Home/home_node.html). I'm very thankful to all the folk in Section 3 in the Faculty of Mathematics, University of Oslo, for helping me getting around the world of stochastic processes: Dennis, Anton, Michele, Fabian, Marc, Prof. Benth and Prof. di Nunno. In April 2020 Galib Hassan joined in extending `MFDFA`, particularly the implementation of EMD.
+This project was started in 2019 at the [Faculty of Mathematics, University of Oslo](https://www.mn.uio.no/math/english/research/groups/risk-stochastics/) in the Risk and Stochastics section by Leonardo Rydin Gorjão and is supported by Dirk Witthaut and the [Institute of Energy and Climate Research Systems Analysis and Technology Evaluation](https://www.fz-juelich.de/iek/iek-ste/EN/Home/home_node.html). I'm very thankful to all the folk in Section 3 in the Faculty of Mathematics, University of Oslo, for helping me getting around the world of stochastic processes: Dennis, Anton, Michele, Fabian, Marc, Prof. Benth and Prof. di Nunno. In April 2020 Galib Hassan joined in extending `MFDFA`, particularly the implementation of `EMD`.
 
 
 ### Funding

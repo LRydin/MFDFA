@@ -10,6 +10,8 @@ MFDFA's documentation
 
 .. include:: 1dprocess.rst
 
+.. include:: 1dLevy.rst
+
 .. include:: extensions.rst
 
 Literature
@@ -30,9 +32,11 @@ Table of Content
 
 .. toctree::
    :maxdepth: 3
+   :hidden:
 
    installation
    1dprocess
+   1dLevy
    extensions
    functions/index
    license

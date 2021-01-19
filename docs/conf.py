@@ -22,12 +22,12 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'MFDFA'
-copyright = '2019-2020 Leonardo Rydin'
+copyright = '2019-2021 Leonardo Rydin'
 author = 'Leonardo Rydin'
 
 # The full version, including alpha/beta/rc tags
-release = '0.3'
-version = '0.3'
+release = '0.4'
+version = '0.4'
 
 
 # -- General configuration ---------------------------------------------------
@@ -89,7 +89,7 @@ html_theme_options = {
     'style_external_links': False,
     'style_nav_header_background': 'black',
     # Toc options
-    'collapse_navigation': True,
+    'collapse_navigation': False,
     'sticky_navigation': True,
     'navigation_depth': 4,
     'titles_only': False

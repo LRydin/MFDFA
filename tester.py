@@ -3,7 +3,8 @@ import numpy as np
 from numpy.polynomial.polynomial import polyfit
 import matplotlib.pyplot as plt
 
-import MFDFA as MFDFA
+from MFDFA import MFDFA
+from MFDFA import fgn
 
 # %% Lets take a fractional Ornstein–Uhlenbeck process Xₜ with a time-dependent
 # diffusion or volatility σₜ, some drift of mean reverting term θ(Xₜ), and
@@ -31,7 +32,7 @@ X = np.zeros(time.size)
 H = 0.5
 
 # Generate the fractional Gaussian noise
-dw = (t_final ** H) * MFDFA.fgn(time.size, H = H)
+dw = (t_final ** H) * fgn(time.size, H = H)
 
 # Integrate the process
 for i in range(1,time.size):
@@ -49,7 +50,7 @@ lag = np.unique(np.logspace(0, np.log10(X.size // 10), 25).astype(int)+1)
 q = 2
 
 # dfa records the fluctuation function using the EMD as a detrending mechanims.
-lag, dfa, dfa_std, e_dfa = MFDFA.MFDFA(X, lag, q = q, order = 1, stat = True, extensions = {"eDFA": True})
+lag, dfa, dfa_std, e_dfa = MFDFA(X, lag, q = q, order = 1, stat = True, extensions = {"eDFA": True})
 
 # %% Plots
 # Visualise the results in a log-log plot
