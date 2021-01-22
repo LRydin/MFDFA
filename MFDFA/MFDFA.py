@@ -56,23 +56,23 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray, order: int=1,
         lag > size of data / 4 since there is low statistics with < 4 windows
         to divide the timeseries.
 
-    order: int (default = 1)
+    order: int (default ``1``)
         The order of the polynomials to approximate. ``order = 1`` is the DFA1,
         which is a least-square fit of the data with a first order polynomial (a
         line), ``order = 2`` is a second-order polynomial, etc..
         ``order = 0`` skips the detrending process and hence gives the
         nondetrended fluctuation functions, i.e., simply Fluctuation Analysis.
 
-    q: np.ndarray (default = 2)
+    q: np.ndarray (default ``2``)
         Fractal exponent to calculate. Array in ``[-10,10]``. The values = 0
         will be removed, since the code does not converge there. ``q = 2`` is
         the standard Detrended Fluctuation Analysis as is set a default.
 
-    stat: bool (default = False)
+    stat: bool (default ``False``)
         Calculates the standard deviation associated with each segment's
         averaging.
 
-    modified: bool (default = False)
+    modified: bool (default ``False``)
         For data with the Hurst index ≈ 0, i.e., strongly anticorrelated, a
         standard MFDFA will result in inacurate results, thus a further
         integration of the timeseries yields a modified scaling coefficient.
@@ -99,7 +99,7 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray, order: int=1,
         entries > order + 1
 
     f: np.ndarray
-        A array of shape (size(lag),size(q)) of variances over the indicated
+        A array of shape ``(size(lag),size(q))`` of variances over the indicated
         lag windows and the indicated q-fractal powers.
 
     References
