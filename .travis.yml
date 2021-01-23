@@ -30,9 +30,11 @@ jobs:
         - pip install coverage
         - pip install -r requirements.txt
         - pip install EMD-signal
+        - pip install matplotlib
       script:
         - coverage run -m pytest test/test_EMD.py
         - coverage run -m pytest test/test_MFDFA_extras.py
+        - coverage run -m pytest test/test_spectrum.py
   allow_failures:
     - python: "nightly"
 
