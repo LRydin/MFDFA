@@ -59,7 +59,7 @@ def singularity_spectrum(lag: np.array, mfdfa: np.ndarray, q: np.array,
     tau = scaling_exponents(lag, mfdfa, q, lim, interpolate)
 
     # Calculate hq, which needs tau
-    hq = _hq(tau, q)
+    hq = hurst_exponents(lag, mfdfa, q, lim, interpolate)
 
     # Calculate Dq, which needs tau and hq
     Dq = _Dq(tau, hq, q)
@@ -119,15 +119,84 @@ def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
     return ( q * slopes ) - 1
 
-def _hq(tau, q):
+def hurst_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
+                    lim: list=[None, None], interpolate: int=False):
     """
-    Calculate the singularity strength or Hölder exponents ``hq``.
+    Calculate the generalised Hurst exponents 'hq' from the
+
+    Parameters
+    ----------
+    lag: np.array of ints
+        An array with the window sizes which where used in MFDFA.
+
+    mdfda: np.ndarray
+        Matrix of the fluctuation function from MFDFA
+
+    q: np.array
+        Fractal exponents used. Must be more than 2 points.
+
+    lim: list (default = [None, None])
+        List of lower and upper lag limits. If none, the polynomial fittings
+        include the full range of lag.
+
+    interpolate: int (default False)
+        Interpolates the ``q`` space to smoothed the singularity spectrum. Not
+        yet implemented.
+
+    Returns
+    -------
+    hq: np.array
+        Singularity strength ``hq``. The width of this function indicates the
+        strength of the multifractality. A width of ``max(hq) - min(hq) ≈ 0``
+        means the data is monofractal.
 
     Notes
     -----
     .. versionadded:: 0.4.1
+
+    References
+    ----------
+    .. [Kantelhardt2002] J. W. Kantelhardt, S. A. Zschiegner, E.
+        Koscielny-Bunde, S. Havlin, A. Bunde, H. E. Stanley. "Multifractal
+        detrended fluctuation analysis of nonstationary time series." Physica A,
+        316(1-4), 87–114, 2002.
     """
+
+    # Calculate tau
+    tau = scaling_exponents(lag, mfdfa, q, lim, interpolate)
+
     return ( np.gradient(tau) / np.gradient(q) )
+
+def _slopes(lag: np.array, mfdfa: np.ndarray, q: np.array,
+            lim: list=[None, None], interpolate: int=False):
+    """
+    Extra the slopes of each q power obtained with MFDFA to later produce either
+    the singularity spectrum or the multifractal exponents.
+
+    Notes
+    -----
+    .. versionadded:: 0.4.1
+
+    """
+
+    # Fractal powers as floats
+    q = np.asarray_chkfinite(q, dtype = float)
+
+    # Ensure mfdfa has the same q-power entries as q
+    if mfdfa.shape[1] != q.shape[0]:
+        raise ValueError(
+            "Fluctuation function and q powers don't match in dimension.")
+
+    # Allocated array for slopes
+    slopes = np.zeros(len(q))
+
+    # Find slopes of each q-power
+    for i in range(len(q)):
+        slopes[i] = polyfit(np.log(lag[lim[0]:lim[1]]),
+                            np.log(mfdfa[lim[0]:lim[1],i]),
+                            1)[1]
+
+    return slopes
 
 def _Dq(tau, hq, q):
     """
@@ -161,22 +230,14 @@ def singularity_spectrum_plot(hq, Dq):
     .. versionadded:: 0.4.1
     """
 
-    # Check if matplotlib is installed
-    _missing_library()
-    import matplotlib.pyplot as plt
-
-    fig, ax = plt.subplots(1,1)
-
-    ax.plot(hq, Dq, lw = 2, color = 'black')
+    fig, ax = _plotter(hq, Dq)
 
     ax.set_ylabel(r'Dq')
     ax.set_xlabel(r'hq')
 
-    fig.tight_layout()
-
     return fig
 
-def scaling_exponents_plot(tau, q):
+def scaling_exponents_plot(q, tau):
     """
     Plots the scaling exponents, which is conventionally given with ``q`` in the
     abscissa and ``tau`` in the ordinates.
@@ -200,26 +261,31 @@ def scaling_exponents_plot(tau, q):
 
     """
 
-    # Check if matplotlib is installed
-    _missing_library()
-    import matplotlib.pyplot as plt
-
-    fig, ax = plt.subplots(1,1)
-
-    ax.plot(tau, q, lw = 2, color = 'black')
+    fig, ax = _plotter(q, tau)
 
     ax.set_ylabel(r'tau')
     ax.set_xlabel(r'q')
 
-    fig.tight_layout()
-
     return fig
 
-def _slopes(lag: np.array, mfdfa: np.ndarray, q: np.array,
-            lim: list=[None, None], interpolate: int=False):
+def hurst_exponents_plot(q, hq):
     """
-    Extra the slopes of each q power obtained with MFDFA to later produce either
-    the singularity spectrum or the multifractal exponents.
+    Plots the generalised Hurst exponents ``hq`` in the ordinates with ``q``
+    in the abscissa.
+
+    Parameters
+    ----------
+    tau: np.array
+        Generalised Hurst coefficients ``hq`` as calculated with
+        `hurst_exponents`.
+
+    q: np.array
+        Singularity spectrum ``Dq`` as calculated with `singularity_spectrum`.
+
+    Returns
+    -------
+    fig: matplotlib fig
+        Returns the figure, useful if one wishes to use fig.savefig(...).
 
     Notes
     -----
@@ -227,24 +293,34 @@ def _slopes(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
     """
 
-    # Fractal powers as floats
-    q = np.asarray_chkfinite(q, dtype = float)
+    fig, ax = _plotter(q, hq)
 
-    # Ensure mfdfa has the same q-power entries as q
-    if mfdfa.shape[1] != q.shape[0]:
-        raise ValueError(
-            "Fluctuation function and q powers don't match in dimension.")
+    ax.set_ylabel(r'hq')
+    ax.set_xlabel(r'q')
 
-    # Allocated array for slopes
-    slopes = np.zeros(len(q))
+    return fig
 
-    # Find slopes of each q-power
-    for i in range(len(q)):
-        slopes[i] = polyfit(np.log(lag[lim[0]:lim[1]]),
-                            np.log(mfdfa[lim[0]:lim[1],i]),
-                            1)[1]
+def _plotter(x, y):
+    """
+    Plot helper function.
 
-    return slopes
+    Notes
+    -----
+    .. versionadded:: 0.4.1
+
+    """
+
+    # Check if matplotlib is installed
+    _missing_library()
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots(1,1)
+
+    ax.plot(x, y, lw = 2, color = 'black')
+
+    fig.tight_layout()
+
+    return fig, ax
 
 def _missing_library():
     try:
