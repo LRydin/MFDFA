@@ -2,7 +2,7 @@
 ![PyPI - License](https://img.shields.io/pypi/l/MFDFA)
 ![PyPI](https://img.shields.io/pypi/v/MFDFA)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/MFDFA)
-[![Build Status](https://travis-ci.org/LRydin/MFDFA.svg?branch=master)](https://travis-ci.org/LRydin/MFDFA)
+[![Build Status](https://github.com/LRydin/MFDFA/actions/workflows/CI.yml/badge.svg)](https://github.com/LRydin/MFDFA/actions/workflows/CI.yml)
 [![codecov](https://codecov.io/gh/LRydin/MFDFA/branch/master/graph/badge.svg)](https://codecov.io/gh/LRydin/MFDFA)
 [![Documentation Status](https://readthedocs.org/projects/mfdfa/badge/?version=latest)](https://mfdfa.readthedocs.io/en/latest/?badge=latest)
 

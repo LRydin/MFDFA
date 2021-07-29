@@ -1,0 +1,44 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: MFDFA CI
+
+on: push
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: [3.5, 3.6, 3.7, 3.8, 3.9, pypy-3.6, pypy-3.7]
+        exclude:
+          - os: macos-latest
+            python-version: pypy-3.6
+          - os: macos-latest
+            python-version: pypy-3.7
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install coverage pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Install extra dependencies for extra packages
+      if: ${{ matrix.python-version == 3.6 }}
+      run: |
+        pip install EMD-signal
+    - name: Testing extra packages with coverage
+      if: ${{ matrix.python-version == 3.6 }}
+      run: |
+        coverage run -m pytest test/test_EMD.py
+        coverage run -m pytest test/test_MFDFA_extras.py
+
+    - name: Upload code coverage
+      uses: codecov/codecov-action@v1
