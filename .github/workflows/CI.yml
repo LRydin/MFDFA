@@ -29,6 +29,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install coverage pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Testing standard packages with coverage
+      run: |
+        coverage run -m pytest test/test_fgn.py
+        coverage run -m pytest test/test_MFDFA.py
 
     - name: Install extra dependencies for extra packages
       if: ${{ matrix.python-version == 3.6 }}
