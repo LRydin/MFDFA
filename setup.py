@@ -14,7 +14,8 @@ setuptools.setup(
     url="https://github.com/LRydin/MFDFA",
     packages=setuptools.find_packages(),
     install_requires = ["numpy"],
-    extras_require = {"EMD-signal": ["EMD-signal"]},
+    extras_require = {"EMD-signal": ["EMD-signal"],
+                      "matplotlib": ["matplotlib"]},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

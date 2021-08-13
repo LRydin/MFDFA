@@ -28,6 +28,15 @@ def detrendedtimeseries(timeseries: np.ndarray, modes: list):
     detrendedTimeseries: np.ndarray
         Detrended 1-dimensional ``timeseries``.
 
+    Warnings
+    --------
+    To use the extension Empirical Mode Decomposition for detrending, the pyEMD
+    library is needed
+
+    .. code::
+
+        pip install EMD-signal
+
     Notes
     -----
     .. versionadded:: 0.3
@@ -75,7 +84,7 @@ def IMFs(timeseries: np.ndarray):
     """
 
     # Check if EMD-signal is installed
-    missing_library()
+    _missing_library()
     from PyEMD import EMD
 
     # Initiate pyEMD's EMD function
@@ -88,7 +97,7 @@ def IMFs(timeseries: np.ndarray):
     return IMFs
 
 
-def missing_library():
+def _missing_library():
     try:
         import PyEMD.EMD as _EMD
     except ImportError:
