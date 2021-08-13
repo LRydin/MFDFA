@@ -7,8 +7,13 @@ import numpy as np
 
 # Import of PyEMD is called inside the function
 
+__all__ = [
+    'detrendedtimeseries',
+    'IMFs'
+]
 
-def detrendedtimeseries(timeseries: np.ndarray, modes: list):
+
+def detrendedtimeseries(timeseries: np.ndarray, modes: list) -> np.ndarray:
     """
     The function calculates the Intrinsic Mode Functions (IMFs) of a given
     timeseries, subtracts the user-chosen IMFs for detrending, and returns the
@@ -63,7 +68,7 @@ def detrendedtimeseries(timeseries: np.ndarray, modes: list):
     return detrendedTimeseries
 
 
-def IMFs(timeseries: np.ndarray):
+def IMFs(timeseries: np.ndarray) -> np.ndarray:
     """
     Extract the Intrinsic Mode Functions (IMFs) of a given timeseries.
 
@@ -99,7 +104,7 @@ def IMFs(timeseries: np.ndarray):
     return IMFs
 
 
-def _missing_library():
+def _missing_library() -> None:
     try:
         import PyEMD.EMD as _EMD
     except ImportError:
@@ -107,3 +112,4 @@ def _missing_library():
             ("PyEMD is required to do Empirical Mode decomposition. Please "
              "install PyEMD with 'pip install EMD-signal'.")
         )
+    return

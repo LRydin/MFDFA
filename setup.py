@@ -22,5 +22,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     license="MIT License",
-    python_requires='>=3.3',
+    python_requires='>=3.5',
 )

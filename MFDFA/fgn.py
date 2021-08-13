@@ -4,6 +4,10 @@
 
 import numpy as np
 
+__all__ = [
+    'fgn',
+]
+
 
 def fgn(N: int, H: float) -> np.ndarray:
     """
@@ -32,32 +36,40 @@ def fgn(N: int, H: float) -> np.ndarray:
     assert isinstance(H, float), "Hurst index must be a float in (0,1)"
 
     # Generate linspace
-    k = np.linspace(0, N-1, N)
+    k = np.linspace(0, N - 1, N)
 
     # Correlation function
-    cor = 0.5*(abs(k - 1)**(2*H) - 2*abs(k)**(2*H) + abs(k + 1)**(2*H))
+    cor = 0.5 * (abs(k - 1) ** (2 * H)
+                 - 2 * abs(k) ** (2 * H)
+                 + abs(k + 1) ** (2 * H)
+                 )
 
     # Eigenvalues of the correlation function
-    eigenvals = np.sqrt(
-                  np.fft.fft(
-                    np.concatenate([cor[:], 0, cor[1:][::-1]], axis=None).real
-                  )
+    eigenvals = \
+        np.sqrt(
+            np.fft.fft(
+                np.real(
+                    np.concatenate(
+                        [cor[:], 0, cor[1:][::-1]], axis=None
+                    )
                 )
+            )
+        )
 
     # Two normal distributed noises to be convoluted
     gn = np.random.normal(0.0, 1.0, N)
     gn2 = np.random.normal(0.0, 1.0, N)
 
     # This is the Davies–Harte method
+
     w = np.concatenate(
-            [(eigenvals[0] / np.sqrt(2 * N)) * gn[0],
-             (eigenvals[1:N] / np.sqrt(4 * N)) * (gn[1:] + 1j * gn2[1:]),
-             (eigenvals[N] / np.sqrt(2 * N)) * gn2[0],
-             (eigenvals[N+1:] / np.sqrt(4 * N)) *
-             (gn[1:][::-1] - 1j * gn2[1:][::-1])
-             ],
-            axis=None
-        )
+        [
+            (eigenvals[0] / np.sqrt(2 * N)) * gn[0],
+            (eigenvals[1:N] / np.sqrt(4 * N)) * (gn[1:] + 1j * gn2[1:]),
+            (eigenvals[N] / np.sqrt(2 * N)) * gn2[0],
+            (eigenvals[N + 1:] / np.sqrt(4 * N))
+            * (gn[1:][:: - 1] - 1j * gn2[1:][:: - 1])
+        ], axis=None)
 
     # Perform fft. Only first N entry are useful
     f = np.fft.fft(w).real[:N] * ((1.0 / N) ** H)

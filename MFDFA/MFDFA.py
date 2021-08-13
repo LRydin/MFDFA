@@ -11,6 +11,11 @@ import numpy as np
 from numpy.polynomial.polynomial import polyfit, polyval
 from .emddetrender import detrendedtimeseries
 
+__all__ = [
+    'MFDFA',
+    'eDFA'
+]
+
 
 def MFDFA(timeseries: np.ndarray, lag: np.ndarray, order: int = 1,
           q: np.ndarray = 2, stat: bool = False, modified: bool = False,

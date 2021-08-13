@@ -10,10 +10,18 @@ from typing import Tuple
 import numpy as np
 from numpy.polynomial.polynomial import polyfit
 
+__all__ = [
+    'scaling_exponents',
+    'hurst_exponents',
+    'singularity_spectrum_plot',
+    'scaling_exponents_plot',
+    'hurst_exponents_plot'
+]
+
 
 def singularity_spectrum(lag: np.array, mfdfa: np.ndarray, q: np.array,
-                         lim: list = [None, None], interpolate: int = False) \
-                        -> Tuple[np.array, np.array]:
+                         lim: list = [None, None], interpolate: int = False
+                         ) -> Tuple[np.array, np.array]:
     """
     Extract the slopes of the fluctuation function to further obtain the
     singularity strength `α` and singularity spectrum `f(α)`.
@@ -64,7 +72,7 @@ def singularity_spectrum(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
     # if no limits given
     if lim[0] is None and lim[1] is None:
-        lim = [1, lag.size//2]
+        lim = [1, lag.size // 2]
 
     # clean q
     q = _clean_q(q)
@@ -82,8 +90,8 @@ def singularity_spectrum(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
 
 def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
-                      lim: list = [None, None], interpolate: int = False)\
-                      -> Tuple[np.array, np.array]:
+                      lim: list = [None, None], interpolate: int = False
+                      ) -> Tuple[np.array, np.array]:
     """
     Calculate the multifractal scaling exponents `τ`, which is given by
 
@@ -144,7 +152,7 @@ def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
     # if no limits given
     if lim[0] is None and lim[1] is None:
-        lim = [1, lag.size//2]
+        lim = [1, lag.size // 2]
 
     # clean q
     q = _clean_q(q)
@@ -156,8 +164,8 @@ def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
 
 def hurst_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
-                    lim: list = [None, None], interpolate: int = False)\
-                    -> Tuple[np.array, np.array]:
+                    lim: list = [None, None], interpolate: int = False
+                    ) -> Tuple[np.array, np.array]:
     """
     Calculate the generalised Hurst exponents `h(q)` from MFDFA, which
     are simply the slopes of each DFA for various `q` values.
@@ -209,7 +217,7 @@ def hurst_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
     # if no limits given
     if lim[0] is None and lim[1] is None:
-        lim = [1, lag.size//2]
+        lim = [1, lag.size // 2]
 
     # clean q
     q = _clean_q(q)
@@ -221,7 +229,8 @@ def hurst_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
 
 def _slopes(lag: np.array, mfdfa: np.ndarray, q: np.array,
-            lim: list = [None, None], interpolate: int = False):
+            lim: list = [None, None], interpolate: int = False
+            ) -> np.array:
     """
     Extra the slopes of each `q` power obtained with MFDFA to later produce
     either the singularity spectrum or the multifractal exponents.
@@ -234,7 +243,7 @@ def _slopes(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
     # if no limits given
     if lim[0] is None and lim[1] is None:
-        lim = [lag[1], lag[lag.size//2]]
+        lim = [lag[1], lag[lag.size // 2]]
 
     # clean q
     q = _clean_q(q)
@@ -253,16 +262,15 @@ def _slopes(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
     # Find slopes of each q-power
     for i in range(len(q)):
-        slopes[i] = polyfit(
-                        np.log(lag[lim[0]:lim[1]]),
-                        np.log(mfdfa[lim[0]:lim[1], i]),
-                        1
-                    )[1]
+        slopes[i] = polyfit(np.log(lag[lim[0]:lim[1]]),
+                            np.log(mfdfa[lim[0]:lim[1], i]),
+                            1
+                            )[1]
 
     return slopes
 
 
-def _falpha(tau, alpha, q):
+def _falpha(tau, alpha, q) -> np.array:
     """
     Calculate the singularity spectrum or fractal dimension `f(α)`.
 
@@ -276,7 +284,7 @@ def _falpha(tau, alpha, q):
 # Plotters
 
 
-def singularity_spectrum_plot(alpha, f):
+def singularity_spectrum_plot(alpha, f) -> np.array:
     """
     Plots the singularity spectrum.
 
@@ -309,7 +317,7 @@ def singularity_spectrum_plot(alpha, f):
     return fig, ax
 
 
-def scaling_exponents_plot(q, tau):
+def scaling_exponents_plot(q, tau) -> Tuple['plt.fig', 'plt.Axes']:
     """
     Plots the scaling exponents, which is conventionally given with `q` in the
     abscissa and `τ` in the ordinates.
@@ -344,7 +352,7 @@ def scaling_exponents_plot(q, tau):
     return fig, ax
 
 
-def hurst_exponents_plot(q, hq):
+def hurst_exponents_plot(q, hq) -> Tuple['plt.fig', 'plt.Axes']:
     """
     Plots the generalised Hurst exponents `h(q)` in the ordinates with `q`
     in the abscissa.
@@ -380,7 +388,7 @@ def hurst_exponents_plot(q, hq):
     return fig, ax
 
 
-def _clean_q(q):
+def _clean_q(q) -> np.array:
 
     # Fractal powers as floats
     q = np.asarray_chkfinite(q, dtype=np.float)
@@ -394,7 +402,7 @@ def _clean_q(q):
     return q
 
 
-def _plotter(x, y):
+def _plotter(x: np.array, y: np.array) -> Tuple['plt.fig', 'plt.Axes']:
     """
     Plot helper function.
 
@@ -417,9 +425,9 @@ def _plotter(x, y):
     return fig, ax
 
 
-def _missing_library():
+def _missing_library() -> None:
     try:
-        import matplotlib.pyplot
+        import matplotlib.pyplot as plt
     except ImportError:
         raise ImportError(
             ("'matplotlib' is required to do output the singularity "
