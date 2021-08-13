@@ -1,8 +1,9 @@
-## This is based the work of Christopher Flynn fbm in
+# This is based the work of Christopher Flynn fbm in
 # https://github.com/crflynn/fbm and Davies, Robert B., and D. S. Harte. “Tests
 # for Hurst effect.” Biometrika 74, no. 1 (1987): 95-101.
 
 import numpy as np
+
 
 def fgn(N: int, H: float) -> np.ndarray:
     """
@@ -31,7 +32,7 @@ def fgn(N: int, H: float) -> np.ndarray:
     assert isinstance(H, float), "Hurst index must be a float in (0,1)"
 
     # Generate linspace
-    k = np.linspace(0,N-1,N)
+    k = np.linspace(0, N-1, N)
 
     # Correlation function
     cor = 0.5*(abs(k - 1)**(2*H) - 2*abs(k)**(2*H) + abs(k + 1)**(2*H))
@@ -39,7 +40,7 @@ def fgn(N: int, H: float) -> np.ndarray:
     # Eigenvalues of the correlation function
     eigenvals = np.sqrt(
                   np.fft.fft(
-                    np.concatenate([cor[:],0,cor[1:][::-1]],axis = None).real
+                    np.concatenate([cor[:], 0, cor[1:][::-1]], axis=None).real
                   )
                 )
 
@@ -49,15 +50,17 @@ def fgn(N: int, H: float) -> np.ndarray:
 
     # This is the Davies–Harte method
     w = np.concatenate(
-        [(eigenvals[0]   / np.sqrt(2*N)) * gn[0],
-         (eigenvals[1:N] / np.sqrt(4*N)) *(gn[1:] + 1j*gn2[1:]),
-         (eigenvals[N]   / np.sqrt(2*N)) * gn2[0],
-         (eigenvals[N+1:]/ np.sqrt(4*N)) *(gn[1:][::-1] - 1j*gn2[1:][::-1])
-        ],
-        axis = None)
+            [(eigenvals[0] / np.sqrt(2 * N)) * gn[0],
+             (eigenvals[1:N] / np.sqrt(4 * N)) * (gn[1:] + 1j * gn2[1:]),
+             (eigenvals[N] / np.sqrt(2 * N)) * gn2[0],
+             (eigenvals[N+1:] / np.sqrt(4 * N)) *
+             (gn[1:][::-1] - 1j * gn2[1:][::-1])
+             ],
+            axis=None
+        )
 
     # Perform fft. Only first N entry are useful
-    f = np.fft.fft(w).real[:N] * ( (1.0 / N) ** H )
+    f = np.fft.fft(w).real[:N] * ((1.0 / N) ** H)
 
     # TODO: Check for further speed-ups
     # TODO: Generalise for several outputs. Should be straightforward.
