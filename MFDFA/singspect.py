@@ -15,7 +15,7 @@ def singularity_spectrum(lag: np.array, mfdfa: np.ndarray, q: np.array,
                          -> Tuple[np.array, np.array]:
     """
     Extract the slopes of the fluctuation function to further obtain the
-    the singularity strength `α` and singularity spectrum `f(α)`.
+    singularity strength `α` and singularity spectrum `f(α)`.
 
     Parameters
     ----------
@@ -28,7 +28,7 @@ def singularity_spectrum(lag: np.array, mfdfa: np.ndarray, q: np.array,
     q: np.array
         Fractal exponents used. Must be more than 2 points.
 
-    lim: list (default = [None, None])
+    lim: list (default `[1, lag.size//2]`)
         List of lower and upper lag limits. If none, the polynomial fittings
         will be restrict to half the maximal lag and discard the first lag
         point.
@@ -83,8 +83,7 @@ def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
                       lim: list = [None, None], interpolate: int = False)\
                       -> Tuple[np.array, np.array]:
     """
-    Calculate the multifractal scaling exponents `τ`, which is given
-    by
+    Calculate the multifractal scaling exponents `τ`, which is given by
 
     .. math::
 
@@ -108,7 +107,7 @@ def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
     q: np.array
         Fractal exponents used. Must be more than 2 points.
 
-    lim: list (default = [None, None])
+    lim: list (default `[1, lag.size//2]`)
         List of lower and upper lag limits. If none, the polynomial fittings
         will be restrict to half the maximal lag and discard the first lag
         point.
@@ -174,7 +173,7 @@ def hurst_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
     q: np.array
         Fractal exponents used. Must be more than 2 points.
 
-    lim: list (default = [None, None])
+    lim: list (default `[1, lag.size//2]`)
         List of lower and upper lag limits. If none, the polynomial fittings
         will be restrict to half the maximal lag and discard the first lag
         point.
