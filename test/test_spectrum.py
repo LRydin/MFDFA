@@ -7,9 +7,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import levy_stable
 
 from MFDFA import MFDFA
-from MFDFA import singularity_spectrum, singularity_spectrum_plot
-from MFDFA import scaling_exponents, scaling_exponents_plot
-from MFDFA import hurst_exponents, hurst_exponents_plot
+from MFDFA import singspect
 
 
 def test_spectrum():
@@ -25,21 +23,21 @@ def test_spectrum():
             print(q)
             lag = np.unique(
                   np.logspace(
-                  0, np.log10(X.size // 4), 25
+                  0, np.log10(X.size // 4), 55
                   ).astype(int) + 1
                 )
 
             lag, dfa = MFDFA(X, lag = lag, q = q, order = 1)
 
-            hq, Dq  = singularity_spectrum(lag, dfa, q = q)
-            _ = singularity_spectrum_plot(hq, Dq);
-            assert hq.shape[0] == Dq.shape[0], "Output shape mismatch"
-            assert hq.shape[0] == q.shape[0], "Output shape mismatch"
+            alpha, f  = singspect.singularity_spectrum(lag, dfa, q = q)
+            _ = singspect.singularity_spectrum_plot(alpha, f);
+            assert alpha.shape[0] == f.shape[0], "Output shape mismatch"
+            assert alpha.shape[0] == q.shape[0], "Output shape mismatch"
 
-            tau = scaling_exponents(lag, dfa, q = q)
-            _ = scaling_exponents_plot(q, tau);
+            q, tau = singspect.scaling_exponents(lag, dfa, q = q)
+            _ = singspect.scaling_exponents_plot(q, tau);
             assert tau.shape[0] == q.shape[0], "Output shape mismatch"
 
-            hq = hurst_exponents(lag, dfa, q = q)
-            _ = hurst_exponents_plot(q, hq);
+            q, hq = singspect.hurst_exponents(lag, dfa, q = q)
+            _ = singspect.hurst_exponents_plot(q, hq);
             assert hq.shape[0] == q.shape[0], "Output shape mismatch"

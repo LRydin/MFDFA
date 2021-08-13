@@ -1,9 +1,9 @@
 from .MFDFA import MFDFA
 from .fgn import fgn
 from .emddetrender import detrendedtimeseries, IMFs
-from .singspect import singularity_spectrum, singularity_spectrum_plot
-from .singspect import scaling_exponents, scaling_exponents_plot
-from .singspect import hurst_exponents, hurst_exponents_plot
+from . import singspect
 
-
-name = "MFDFA"
+__name__ = "MFDFA"
+__version__ = "0.4.2"
+__author__ = "Leonardo Rydin Gorjão"
+__copyright__ = "Copyright 2019-2021 Leonardo Rydin Gorjão, MIT License"
