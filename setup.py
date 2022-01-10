@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="MFDFA",
-    version="0.4",
+    version="0.4.1",
     author="Leonardo Rydin Gorjao",
     author_email="leonardo.rydin@gmail.com",
     description="Multifractal Detrended Fluctuation Analysis in Python",
@@ -14,11 +14,13 @@ setuptools.setup(
     url="https://github.com/LRydin/MFDFA",
     packages=setuptools.find_packages(),
     install_requires = ["numpy"],
-    extras_require = {"EMD-signal": ["EMD-signal"]},
+    extras_require = {"EMD-signal": ["EMD-signal"],
+                      "matplotlib": ["matplotlib"]},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.3',
+    license="MIT License",
+    python_requires='>=3.5',
 )
