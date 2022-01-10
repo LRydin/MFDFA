@@ -7,7 +7,7 @@ To show how multifractality can be studied, let us take a sample of random numbe
 Univariate random numbers from a Lévy stable distribution
 ---------------------------------------------------------
 
-To obtain a sample of random numbers of Lévy stable distributions, use `scipy`'s `levy_stable`. In particular, take an :math:`\alpha`-stable distribution, with :math:`\alpha=1.5`
+To obtain a sample of random numbers of Lévy stable distributions, use :code:`scipy`'s :code:`levy_stable`. In particular, take an :math:`\alpha`-stable distribution, with :math:`\alpha=1.5`
 
 .. code:: python
 
