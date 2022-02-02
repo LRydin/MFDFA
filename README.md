@@ -1,4 +1,6 @@
-[![DOI](https://zenodo.org/badge/224135077.svg)](https://zenodo.org/badge/latestdoi/224135077)
+[![DOI:10.1016/j.cpc.2021.108254](http://img.shields.io/badge/DOI-10.1016/j.cpc.2021.108254-00ff00.svg)](https://doi.org/10.1016/j.cpc.2021.108254)
+[![arXiv](https://img.shields.io/badge/arXiv-2104.10470-00ff00.svg)](https://arxiv.org/abs/2104.10470)
+[![zenodo](https://zenodo.org/badge/224135077.svg)](https://zenodo.org/badge/latestdoi/224135077)
 ![PyPI - License](https://img.shields.io/pypi/l/MFDFA)
 ![PyPI](https://img.shields.io/pypi/v/MFDFA)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/MFDFA)
@@ -24,6 +26,8 @@ And on your favourite editor simply import `MFDFA` as
 from MFDFA import MFDFA
 ```
 There is an added library `fgn` to generate fractional Gaussian noise.
+
+You can find the latest published paper of this library in Computer Physics Communications [L. Rydin Gorjão, G. Hassan, J. Kurths, and D. Witthaut, _MFDFA: Efficient multifractal detrended fluctuation analysis in python_, Computer Physics Communications *273*, 108254 2022](https://doi.org/10.1016/j.cpc.2021.108254). You can find the paper [here](https://github.com/LRydin/MFDFA/blob/master/paper/paper.pdf).
 
 # The `MFDFA` library
 `MFDFA` basis is solely dependent on `numpy`, especially `numpy`'s `polynomial`. In version 0.3 a [Empirical Mode Decomposition](https://en.wikipedia.org/wiki/Hilbert%E2%80%93Huang_transform) method was added for an alternative method of detrending timeseries, relying on [Dawid Laszuk's](https://github.com/laszukdawid/PyEMD) `PyEMD`.
