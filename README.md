@@ -1,4 +1,4 @@
-[![DOI:10.1016/j.cpc.2021.108254](http://img.shields.io/badge/DOI-10.1101/10.1016/j.cpc.2021.108254-00ff00.svg)](https://doi.org/10.1016/j.cpc.2021.108254)
+[![DOI:10.1016/j.cpc.2021.108254](http://img.shields.io/badge/DOI-10.1016/j.cpc.2021.108254-00ff00.svg)](https://doi.org/10.1016/j.cpc.2021.108254)
 [![arXiv](https://img.shields.io/badge/arXiv-2104.10470-00ff00.svg)](https://arxiv.org/abs/2104.10470)
 [![zenodo](https://zenodo.org/badge/224135077.svg)](https://zenodo.org/badge/latestdoi/224135077)
 ![PyPI - License](https://img.shields.io/pypi/l/MFDFA)
