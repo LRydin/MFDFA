@@ -391,7 +391,7 @@ def hurst_exponents_plot(q, hq) -> Tuple['plt.fig', 'plt.Axes']:
 def _clean_q(q) -> np.array:
 
     # Fractal powers as floats
-    q = np.asarray_chkfinite(q, dtype=np.float)
+    q = np.asarray_chkfinite(q, dtype=float)
 
     # Ensure q≈0 is removed, since it does not converge. Limit set at |q| < 0.1
     q = q[(q < -.1) + (q > .1)]
