@@ -39,6 +39,7 @@ jobs:
       if: ${{ matrix.python-version == 3.6 }}
       run: |
         pip install EMD-signal
+        pip install matplotlib
     - name: Testing extra packages with coverage
       if: ${{ matrix.python-version == 3.6 }}
       run: |
