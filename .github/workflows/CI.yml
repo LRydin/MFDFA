@@ -12,12 +12,14 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python-version: [3.5, 3.6, 3.7, 3.8, 3.9, pypy-3.6, pypy-3.7]
+        python-version: ['3.5', '3.6', '3.7', '3.8', '3.9', '3.10', pypy-3.6, pypy-3.7, pypy-3.8]
         exclude:
           - os: macos-latest
             python-version: pypy-3.6
           - os: macos-latest
             python-version: pypy-3.7
+          - os: macos-latest
+            python-version: pypy-3.8
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
@@ -31,8 +33,10 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Testing standard packages with coverage
       run: |
+        coverage run -m pytest test/test_exceptions.py
         coverage run -m pytest test/test_fgn.py
         coverage run -m pytest test/test_MFDFA.py
+        coverage run -m pytest -rP test/test_speed.py
 
     - name: Install extra dependencies for extra packages
       if: ${{ matrix.python-version == 3.6 }}
