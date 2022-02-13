@@ -33,6 +33,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Testing standard packages with coverage
       run: |
+        coverage run -m pytest test/test_exceptions.py
         coverage run -m pytest test/test_fgn.py
         coverage run -m pytest test/test_MFDFA.py
         coverage run -m pytest -rP test/test_speed.py

@@ -9,7 +9,6 @@ from scipy.stats import levy_stable
 from MFDFA import MFDFA
 from MFDFA import singspect
 
-
 def test_spectrum():
     for N in [1000, 10000]:
         for q_list in [6, 12, 21]:
@@ -41,3 +40,8 @@ def test_spectrum():
             q, hq = singspect.hurst_exponents(lag, dfa, q = q)
             _ = singspect.hurst_exponents_plot(q, hq);
             assert hq.shape[0] == q.shape[0], "Output shape mismatch"
+
+            try:
+                singspect._slopes(lag, dfa, q[0:3])
+            except Exception:
+                pass

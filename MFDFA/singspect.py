@@ -93,15 +93,15 @@ def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
                       lim: list = [None, None], interpolate: int = False
                       ) -> Tuple[np.array, np.array]:
     """
-    Calculate the multifractal scaling exponents `τ`, which is given by
+    Calculate the multifractal scaling exponents `τ(q)`, which is given by
 
     .. math::
 
        \tau(q) = qh(q) - 1.
 
-    To evaluate the scaling exponent `τ`, plot it vs `q`. If the
-    relation between `τ` is linear, the data is monofractal. If not,
-    it is multifractal.
+    To evaluate the scaling exponent `τ(q)`, plot it vs `q`. If the
+    relation between `τ(q)` is linear, the data is monofractal. If
+    not, the data is multifractal.
     Note that these measures rarely match the theoretical expectation,
     thus a variation of ± 0.25 is absolutely reasonable.
 
@@ -132,7 +132,7 @@ def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
         The `q` powers.
 
     tau: np.array
-        Scaling exponents `τ`. A usually increasing function of `q` from
+        Scaling exponents `τ(q)`. A usually increasing function of `q` from
         which the fractality of the data can be determined by its shape. A
         truly linear tau indicates monofractality, whereas a curved one
         (usually curving around small `q` values) indicates multifractality.
@@ -430,8 +430,8 @@ def _missing_library() -> None:
         import matplotlib.pyplot as plt
     except ImportError:
         raise ImportError(
-            ("'matplotlib' is required to do output the singularity "
-             "spectrum plot. Please install 'matplotlib'"
+            ("'matplotlib' is required to output the singularity "
+             "spectrum plots. Please install 'matplotlib'."
              )
         )
 
