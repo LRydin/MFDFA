@@ -50,7 +50,7 @@ from MFDFA import fgn
 # where this second library is to generate fractional Gaussian noises
 
 # integration time and time sampling
-t_final = 500
+t_final = 2000
 delta_t = 0.001
 
 # Some drift theta and diffusion sigma parameters
@@ -97,10 +97,9 @@ Now we need to visualise the results, which can be understood in a log-log scale
 # To uncover the Hurst index, lets get some log-log plots
 plt.loglog(lag, dfa, 'o', label='fOU: MFDFA q=2')
 
-# And now we need to fit the line to find the slope. We will
-# fit the first points, since the results are more accurate
-# there. Don't forget that if you are seeing in log-log
-# scales, you need to fit the logs of the results
+# And now we need to fit the line to find the slope. Don't
+# forget that if you are seeing in log-log scales, you
+# need to fit the logs of the results
 np.polyfit(np.log(lag[:15]), np.log(dfa[:15]),1)[0]
 
 # Now what you should obtain is: slope = H + 1

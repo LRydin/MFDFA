@@ -49,7 +49,8 @@ To now utilise the :code:`MFDFA`, we take this exemplary process and run the (mu
 
    # Select a band of lags, which usually ranges from
    # very small segments of data, to very long ones, as
-   lag = np.unique(np.logspace(0.5, 3, 100).astype(int))
+   lag = np.unique(np.logspace(0.5, 3, 100, dtype=int))
+
    # Notice these must be ints, since these will segment
    # the data into chucks of lag size
 
@@ -70,11 +71,13 @@ Now we need to visualise the results, which can be understood in a log-log scale
    # To uncover the Hurst index, lets get some log-log plots
    plt.loglog(lag, dfa, 'o', label='fOU: MFDFA q=2')
 
-   # And now we need to fit the line to find the slope. We will
-   # fit the first points, since the results are more accurate
-   # there. Don't forget that if you are seeing in log-log
-   # scales, you need to fit the logs of the results
-   np.polyfit(np.log(lag[:15]), np.log(dfa[:15]),1)[0]
+   # And now we need to fit the line to find the slope
+   # in a double logaritmic scales, i.e., you need to
+   # fit the logs of the results
+   H_hat = np.polyfit(np.log(lag)[4:20],np.log(dfa[4:20]),1)[0]
+
+   print('Estimated H = '+'{:.3f}'.format(H_hat[0]))
+
 
    # Now what you should obtain is: slope = H + 1
 
