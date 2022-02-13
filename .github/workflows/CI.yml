@@ -37,6 +37,7 @@ jobs:
         coverage run -m pytest test/test_fgn.py
         coverage run -m pytest test/test_MFDFA.py
         coverage run -m pytest -rP test/test_speed.py
+        coverage report -m
 
     - name: Install extra dependencies for extra packages
       if: ${{ matrix.python-version == 3.6 }}
@@ -49,4 +50,4 @@ jobs:
         coverage run -m pytest test/test_MFDFA_extras.py
 
     - name: Upload code coverage
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v1
