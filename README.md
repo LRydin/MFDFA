@@ -98,11 +98,12 @@ Now we need to visualise the results, which can be understood in a log-log scale
 plt.loglog(lag, dfa, 'o', label='fOU: MFDFA q=2')
 
 # And now we need to fit the line to find the slope. Don't
-# forget that if you are seeing in log-log scales, you
-# need to fit the logs of the results
-np.polyfit(np.log(lag[:15]), np.log(dfa[:15]),1)[0]
+# forget that since you are plotting in a double logarithmic
+# scales, you need to fit the logs of the results
+H_hat = np.polyfit(np.log(lag)[4:20],np.log(dfa[4:20]),1)[0]
 
 # Now what you should obtain is: slope = H + 1
+print('Estimated H = '+'{:.3f}'.format(H_hat[0]))
 ```
 
 <img src="docs/_static/fig1.png" title="MFDFA of a fractional Ornstein–Uhlenbeck process" height="250"/>
@@ -112,6 +113,7 @@ np.polyfit(np.log(lag[:15]), np.log(dfa[:15]),1)[0]
 You can find more about multifractality in the [documentation](https://mfdfa.readthedocs.io/en/latest/1dLevy.html).
 
 # Changelog
+- Version 0.4.1 - Added conventional spectral plots as _h(q)_ vs _q_, _τ(q)_ vs _q_, and _f(α)_ vs _α_.
 - Version 0.4 - EMD is now optional. Restored back compatibility: py3.3 to py3.9. For EMD py3.6 or larger is needed.
 - Version 0.3 - Adding EMD detrending. First release. PyPI code.
 - Version 0.2 - Removed experimental features. Added documentation
