@@ -1,7 +1,7 @@
 # This is based on Kantelhardt, J. W., Zschiegner, S. A., Koscielny-Bunde, E.,
 # Havlin, S., Bunde, A., & Stanley, H. E., Multifractal detrended fluctuation
 # analysis of nonstationary time series. Physica A, 316(1-4), 87-114, 2002 as
-# well as on nolds (https://github.com/CSchoel/nolds) and on work by  Espen A.
+# well as on nolds (https://github.com/CSchoel/nolds) and on work by Espen A.
 # F. Ihlen, Introduction to multifractal detrended fluctuation analysis in
 # Matlab, Front. Physiol., 2012, https://doi.org/10.3389/fphys.2012.00141
 
@@ -13,6 +13,7 @@ from .emddetrender import detrendedtimeseries
 
 __all__ = [
     'MFDFA',
+    'RS',
     'eDFA'
 ]
 
@@ -115,7 +116,7 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray, order: int = 1,
     ----------
     .. [Peng1994] C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons, H. E.
         Stanley, and A. L. Goldberger. "Mosaic organization of DNA
-        nucleotides." Phys. Rev. E, 49(2), 1685–1689, 1994.
+        nucleotides," Phys. Rev. E, 49(2), 1685–1689, 1994.
     .. [Kantelhardt2002] J. W. Kantelhardt, S. A. Zschiegner, E.
         Koscielny-Bunde, S. Havlin, A. Bunde, H. E. Stanley. "Multifractal
         detrended fluctuation analysis of nonstationary time series." Physica
@@ -123,17 +124,25 @@ def MFDFA(timeseries: np.ndarray, lag: np.ndarray, order: int = 1,
     """
 
     # Force lag to be ints, ensure lag > order + 1
+    lag = np.array(lag, dtype=int)
     lag = lag[lag > order + 1]
-    lag = np.round(lag).astype(int)
+
+    # Assert if lag is 1 dimensional
+    if lag.ndim > 1:
+        assert lag.shape[1] == 1, "lag needs to be 1-dimensional list or array"
 
     # Assert if timeseries is 1 dimensional
     if timeseries.ndim > 1:
-        assert timeseries.shape[1] == 1, "Timeseries needs to be 1 dimensional"
+        assert timeseries.shape[1] == 1, "Timeseries needs to be 1-dimensional"
 
     timeseries = timeseries.reshape(-1, 1)
 
     # Size of array
     N = timeseries.shape[0]
+
+    # assert that lag largest element is smaller than the timeseries' size
+    assert lag.max() < N, ("Maximal lag needs to be smaller than time series"
+                           + " length")
 
     # Assert if window is given, that it is int and > 0
     window = False
@@ -307,9 +316,108 @@ def eDFA(F: np.ndarray) -> np.ndarray:
     .. [Pavlov2020] A. N. Pavlov, A. S. Abdurashitov, A. A. Koronovskii Jr., O.
         N. Pavlova, O. V. Semyachkina-Glushkovskaya, and J. Kurths. "Detrended
         fluctuation analysis of cerebrovascular responses to abrupt changes in
-        peripheral arterial pressure in rats." CNSNS 85, 105232, 2020
+        peripheral arterial pressure in rats," CNSNS 85, 105232, 2020
     """
 
     return np.max(F) - np.min(F)
+
+def RS(timeseries: np.ndarray, lag: np.ndarray) -> np.ndarray:
+    """
+    Rescaled range R/S analysis studies the scaling of a time series as
+
+    .. math::
+
+        \mathbb{E}\Bigg[\frac{R(n)}{S(n)}\Bigg]\sim Cn^H,
+
+
+    with :math:`H` the Hurst coefficient. :math:`R(s,n)` and :math:`S(s,n)` are
+    obtained by taking the time series Xₜ, find the integral
+    Yₜ = cumsum(Xₜ - μₓ), with μₓ the mean of Xₜ, and taking the difference of
+    the extrema of n segments of Yₜ of size s. This difference is scaled by the
+    standard deviation of the segmented time series Xₜ.
+
+    .. math::
+
+       R(n) = \max(Y_1,Y_2,...,Y_{n}) - \min(Y_1,Y_2,...,Y_{n}) \\
+       S(n) = \sigma(X_1,X_2,...,X_{n})
+
+    with :math:`\sigma(\cdot)` the standard deviation of each segmented time
+    series Xₜ. The rescaled range is given by the average of the ratio of
+    :math:`R(s,n)` and :math:`S(s,n)`
+
+    .. math::
+
+       R(s)/S(s) = \dfrac{1}{n} \sum_{i=1}^{n} R(n)/S(n)~\mathrm{for}
+       ~s=\lfloor N/n \rfloor.
+
+    The R/S values should be analysed in a double-logaritmic scale in relation
+    to the segmentations s.
+
+    Parameters
+    ----------
+    timeseries: np.ndarray
+        A 1-dimensional timeseries `(N, 1)`. The timeseries of length `N`.
+
+    lag: np.ndarray of ints
+        An array with the window sizes to calculate (ints), > 2.
+
+    Returns
+    -------
+    lag: np.ndarray of ints
+        Array of lags, realigned, preserving only different lags and with
+        entries > 2
+
+    f: np.ndarray
+        A array of shape `size(lag)` with the rescaled range, which should be
+        analysed in a double-logaritmic scale.
+
+    Notes
+    -----
+    .. versionadded:: 0.4.2
+
+    References
+    ----------
+    .. [Mandelbrot1969] B. B. Mandelbrot, J. R. Wallis. "Robustness of the
+        rescaled range R/S in the measurement of noncyclic long run statistical
+        dependence." Water Resour. Manag. 5(5), 0043-1397, 1969
+    """
+
+    # Force lag to be ints, ensure lag > 2
+    lag = np.array(lag, dtype=int)
+    lag = lag[lag > 2]
+
+    # Assert if lag is 1 dimensional
+    if lag.ndim > 1:
+        assert lag.shape[1] == 1, "lag needs to be 1-dimensional list or array"
+
+    # Assert if timeseries is 1 dimensional
+    if timeseries.ndim > 1:
+        assert timeseries.shape[1] == 1, "Timeseries needs to be 1-dimensional"
+
+    timeseries = timeseries.reshape(-1, 1)
+
+    # Size of array
+    N = timeseries.shape[0]
+
+    # "Profile" of the series
+    X = timeseries - np.mean(timeseries)
+    Y = np.cumsum(X)
+
+    # Return f of (fractal)-variances
+    f = np.empty(0)
+
+    for i in lag:
+
+        # Reshape into (N/lag, lag)
+        Y_ = Y[:N - N % i].reshape((N - N % i) // i, i)
+        X_ = X[:N - N % i].reshape((N - N % i) // i, i)
+
+        f = np.append(f,
+                      np.mean((np.max(Y_, axis=1) - np.min(Y_, axis=1))
+                              / np.std(X_, axis=1)
+                             )
+                     )
+
+    return lag, f
 
 # TODO: Add log calculator for q ≈ 0

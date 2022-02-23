@@ -17,7 +17,19 @@ def test_MFDFA():
                   ).astype(int) + 1
                 )
 
-            # Testing wrong-shape array
+            # Testing wrongly shaped lag
+            try:
+                MFDFA(X, lag = lag.reshape(2,-1))
+            except Exception:
+                pass
+
+            # Testing lag larger than timeseries
+            try:
+                MFDFA(X, lag = [3,4,X.size+1])
+            except Exception:
+                pass
+
+            # Testing wrongly shaped array
             try:
                 MFDFA(np.stack((X,X), axis=1), lag = lag)
             except Exception:

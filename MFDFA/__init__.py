@@ -1,4 +1,4 @@
-from .MFDFA import MFDFA
+from .MFDFA import MFDFA, RS
 from .fgn import fgn
 from .emddetrender import detrendedtimeseries, IMFs
 from . import singspect
