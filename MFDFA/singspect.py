@@ -37,7 +37,7 @@ def singularity_spectrum(lag: np.array, mfdfa: np.ndarray, q: np.array,
     q: np.array
         Fractal exponents used. Must be more than 2 points.
 
-    lim: list (default `[1, lag.size//2]`)
+    lim: list (default `[int(lag.size // 1.5), int(lag.size // 8)]`)
         List of lower and upper lag limits. If none, the polynomial fittings
         will be restrict to half the maximal lag and discard the first lag
         point.
@@ -72,7 +72,7 @@ def singularity_spectrum(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
     # if no limits given
     if lim[0] is None and lim[1] is None:
-        lim = [1, lag.size // 2]
+        lim = [int(lag.size // 8), int(lag.size // 1.5)]
 
     # clean q
     q = _clean_q(q)
@@ -117,7 +117,7 @@ def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
     q: np.array
         Fractal exponents used. Must be more than 2 points.
 
-    lim: list (default `[1, lag.size//2]`)
+    lim: list (default `[int(lag.size // 1.5), int(lag.size // 8)]`)
         List of lower and upper lag limits. If none, the polynomial fittings
         will be restrict to half the maximal lag and discard the first lag
         point.
@@ -152,7 +152,7 @@ def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
     # if no limits given
     if lim[0] is None and lim[1] is None:
-        lim = [1, lag.size // 2]
+        lim = [int(lag.size // 8), int(lag.size // 1.5)]
 
     # clean q
     q = _clean_q(q)
@@ -184,7 +184,7 @@ def hurst_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
     q: np.array
         Fractal exponents used. Must be more than 2 points.
 
-    lim: list (default `[1, lag.size//2]`)
+    lim: list (default `[int(lag.size // 1.5), int(lag.size // 8)]`)
         List of lower and upper lag limits. If none, the polynomial fittings
         will be restrict to half the maximal lag and discard the first lag
         point.
@@ -217,7 +217,7 @@ def hurst_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
     # if no limits given
     if lim[0] is None and lim[1] is None:
-        lim = [1, lag.size // 2]
+        lim = [int(lag.size // 8), int(lag.size // 1.5)]
 
     # clean q
     q = _clean_q(q)
@@ -229,7 +229,7 @@ def hurst_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
 
 def _slopes(lag: np.array, mfdfa: np.ndarray, q: np.array,
-            lim: list = [None, None], interpolate: int = False
+            lim: list = [None, None], modified=True, interpolate: int = False
             ) -> np.array:
     """
     Extra the slopes of each `q` power obtained with MFDFA to later produce
@@ -243,7 +243,7 @@ def _slopes(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
     # if no limits given
     if lim[0] is None and lim[1] is None:
-        lim = [lag[1], lag[lag.size // 2]]
+        lim = [int(lag.size // 8), int(lag.size // 1.5)]
 
     # clean q
     q = _clean_q(q)
@@ -265,7 +265,7 @@ def _slopes(lag: np.array, mfdfa: np.ndarray, q: np.array,
         slopes[i] = polyfit(np.log(lag[lim[0]:lim[1]]),
                             np.log(mfdfa[lim[0]:lim[1], i]),
                             1
-                            )[1]
+                            )[1] - 1
 
     return slopes
 
@@ -418,7 +418,7 @@ def _plotter(x: np.array, y: np.array) -> Tuple['plt.fig', 'plt.Axes']:
 
     fig, ax = plt.subplots(1, 1)
 
-    ax.plot(x, y, lw=2, color='black')
+    ax.plot(x, y, 'o', color='black')
 
     fig.tight_layout()
 
