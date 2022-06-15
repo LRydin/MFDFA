@@ -113,6 +113,7 @@ print('Estimated H = '+'{:.3f}'.format(H_hat[0]))
 You can find more about multifractality in the [documentation](https://mfdfa.readthedocs.io/en/latest/1dLevy.html).
 
 # Changelog
+- Version 0.4.2 - Corrected spectral plots. Added [examples](https://github.com/LRydin/MFDFA/tree/master/examples) from the paper. 
 - Version 0.4.1 - Added conventional spectral plots as _h(q)_ vs _q_, _τ(q)_ vs _q_, and _f(α)_ vs _α_.
 - Version 0.4 - EMD is now optional. Restored back compatibility: py3.3 to py3.9. For EMD py3.6 or larger is needed.
 - Version 0.3 - Adding EMD detrending. First release. PyPI code.
