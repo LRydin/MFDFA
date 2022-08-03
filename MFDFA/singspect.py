@@ -11,6 +11,7 @@ import numpy as np
 from numpy.polynomial.polynomial import polyfit
 
 __all__ = [
+    'singularity_spectrum',
     'scaling_exponents',
     'hurst_exponents',
     'singularity_spectrum_plot',
@@ -20,11 +21,13 @@ __all__ = [
 
 
 def singularity_spectrum(lag: np.array, mfdfa: np.ndarray, q: np.array,
-                         lim: list = [None, None], interpolate: int = False
+                         lim: list = [[],[]], interpolate: int = False
                          ) -> Tuple[np.array, np.array]:
     """
     Extract the slopes of the fluctuation function to further obtain the
-    singularity strength `α` and singularity spectrum `f(α)`.
+    singularity strength `α` and singularity spectrum `f(α)`. It is important to
+    note that `α` will be centred `>1` for most cases because of the increase in
+    regularity in MFDFA.
 
     Parameters
     ----------
@@ -38,9 +41,9 @@ def singularity_spectrum(lag: np.array, mfdfa: np.ndarray, q: np.array,
         Fractal exponents used. Must be more than 2 points.
 
     lim: list (default `[int(lag.size // 1.5), int(lag.size // 8)]`)
-        List of lower and upper lag limits. If none, the polynomial fittings
-        will be restrict to half the maximal lag and discard the first lag
-        point.
+        List of lower and upper lag limits. If you wish to consider the full
+        range, use `None` to unbound the limits (lower or upper) and thus
+        consider the full lag, e.g., `lim=[None, None]`.
 
     interpolate: int (default False)
         Interpolates the `q` space to smoothed the singularity spectrum. Not
@@ -70,9 +73,13 @@ def singularity_spectrum(lag: np.array, mfdfa: np.ndarray, q: np.array,
         A, 316(1-4), 87–114, 2002.
     """
 
-    # if no limits given
-    if lim[0] is None and lim[1] is None:
-        lim = [int(lag.size // 8), int(lag.size // 1.5)]
+    # if no lower limit is given
+    if lim[0]:
+        lim[0] = int(lag.size // 8)
+
+    # if no upper limit is given
+    if lim[1]:
+         lim[1] = int(lag.size // 1.5)
 
     # clean q
     q = _clean_q(q)
@@ -90,7 +97,7 @@ def singularity_spectrum(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
 
 def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
-                      lim: list = [None, None], interpolate: int = False
+                      lim: list = [[],[]], interpolate: int = False
                       ) -> Tuple[np.array, np.array]:
     """
     Calculate the multifractal scaling exponents `τ(q)`, which is given by
@@ -101,10 +108,9 @@ def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
     To evaluate the scaling exponent `τ(q)`, plot it vs `q`. If the
     relation between `τ(q)` is linear, the data is monofractal. If
-    not, the data is multifractal.
-    Note that these measures rarely match the theoretical expectation,
-    thus a variation of ± 0.25 is absolutely reasonable.
-
+    not, the data is multifractal. Note that these measures rarely match the
+    theoretical expectation,  thus a variation of ± 0.25 is absolutely
+    reasonable.
 
     Parameters
     ----------
@@ -150,9 +156,13 @@ def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
         A, 316(1-4), 87–114, 2002.
     """
 
-    # if no limits given
-    if lim[0] is None and lim[1] is None:
-        lim = [int(lag.size // 8), int(lag.size // 1.5)]
+    # if no lower limit is given
+    if lim[0]:
+        lim[0] = int(lag.size // 8)
+
+    # if no upper limit is given
+    if lim[1]:
+         lim[1] = int(lag.size // 1.5)
 
     # clean q
     q = _clean_q(q)
@@ -164,14 +174,16 @@ def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
 
 def hurst_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
-                    lim: list = [None, None], interpolate: int = False
+                    lim: list = [[],[]], interpolate: int = False
                     ) -> Tuple[np.array, np.array]:
     """
     Calculate the generalised Hurst exponents `h(q)` from MFDFA, which
     are simply the slopes of each DFA for various `q` values.
 
     Note that these measures rarely match the theoretical expectation,
-    thus a variation of ± 0.25 is absolutely reasonable.
+    thus a variation of ± 0.25 is absolutely reasonable. It is important to
+    note that `h(q)` will have values `>1` for most cases because of the
+    increase in regularity in MFDFA.
 
     Parameters
     ----------
@@ -185,9 +197,9 @@ def hurst_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
         Fractal exponents used. Must be more than 2 points.
 
     lim: list (default `[int(lag.size // 1.5), int(lag.size // 8)]`)
-        List of lower and upper lag limits. If none, the polynomial fittings
-        will be restrict to half the maximal lag and discard the first lag
-        point.
+        List of lower and upper lag limits. If you wish to consider the full
+        range, use `None` to unbound the limits (lower or upper) and thus
+        consider the full lag, e.g., `lim=[None, None]`.
 
     interpolate: int (default False)
         Interpolates the `q` space to smoothed the singularity spectrum. Not
@@ -215,9 +227,13 @@ def hurst_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
         A, 316(1-4), 87–114, 2002.
     """
 
-    # if no limits given
-    if lim[0] is None and lim[1] is None:
-        lim = [int(lag.size // 8), int(lag.size // 1.5)]
+    # if no lower limit is given
+    if lim[0]:
+        lim[0] = int(lag.size // 8)
+
+    # if no upper limit is given
+    if lim[1]:
+         lim[1] = int(lag.size // 1.5)
 
     # clean q
     q = _clean_q(q)
@@ -241,9 +257,13 @@ def _slopes(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
     """
 
-    # if no limits given
-    if lim[0] is None and lim[1] is None:
-        lim = [int(lag.size // 8), int(lag.size // 1.5)]
+    # if no lower limit is given
+    if lim[0]:
+        lim[0] = int(lag.size // 8)
+
+    # if no upper limit is given
+    if lim[1]:
+         lim[1] = int(lag.size // 1.5)
 
     # clean q
     q = _clean_q(q)
