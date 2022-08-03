@@ -265,7 +265,7 @@ def _slopes(lag: np.array, mfdfa: np.ndarray, q: np.array,
         slopes[i] = polyfit(np.log(lag[lim[0]:lim[1]]),
                             np.log(mfdfa[lim[0]:lim[1], i]),
                             1
-                            )[1] - 1
+                            )[1]
 
     return slopes
 
