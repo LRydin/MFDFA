@@ -74,11 +74,11 @@ def singularity_spectrum(lag: np.array, mfdfa: np.ndarray, q: np.array,
     """
 
     # if no lower limit is given
-    if lim[0]:
+    if not lim[0]:
         lim[0] = int(lag.size // 8)
 
     # if no upper limit is given
-    if lim[1]:
+    if not lim[1]:
          lim[1] = int(lag.size // 1.5)
 
     # clean q
@@ -157,11 +157,11 @@ def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
     """
 
     # if no lower limit is given
-    if lim[0]:
+    if not lim[0]:
         lim[0] = int(lag.size // 8)
 
     # if no upper limit is given
-    if lim[1]:
+    if not lim[1]:
          lim[1] = int(lag.size // 1.5)
 
     # clean q
@@ -228,11 +228,11 @@ def hurst_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
     """
 
     # if no lower limit is given
-    if lim[0]:
+    if not lim[0]:
         lim[0] = int(lag.size // 8)
 
     # if no upper limit is given
-    if lim[1]:
+    if not lim[1]:
          lim[1] = int(lag.size // 1.5)
 
     # clean q
@@ -258,11 +258,11 @@ def _slopes(lag: np.array, mfdfa: np.ndarray, q: np.array,
     """
 
     # if no lower limit is given
-    if lim[0]:
+    if not lim[0]:
         lim[0] = int(lag.size // 8)
 
     # if no upper limit is given
-    if lim[1]:
+    if not lim[1]:
          lim[1] = int(lag.size // 1.5)
 
     # clean q
