@@ -4,7 +4,6 @@ import sys
 sys.path.append("../")
 
 import matplotlib.pyplot as plt
-from scipy.stats import levy_stable
 
 from MFDFA import MFDFA
 from MFDFA import singspect
@@ -13,8 +12,7 @@ def test_spectrum():
     for N in [1000, 10000]:
         for q_list in [6, 12, 21, 41]:
 
-            alpha = 1.5
-            X = levy_stable.rvs(alpha, beta=0, size=N)
+            X = np.cumsum(np.random.normal(0, 5, size=N))
 
             q = np.linspace(-10, 10, q_list)
             q = q[q!=0.0]
