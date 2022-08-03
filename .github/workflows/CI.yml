@@ -30,6 +30,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install coverage pytest
+        pip install scipy
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Testing standard packages with coverage
       run: |
@@ -40,6 +41,7 @@ jobs:
       run: |
         pip install EMD-signal
         pip install matplotlib
+        pip install scipy
     - name: Testing extra packages with coverage
       if: ${{ matrix.python-version == 3.6 }}
       run: |
