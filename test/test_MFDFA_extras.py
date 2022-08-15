@@ -17,7 +17,7 @@ def test_MFDFA():
                   ).astype(int) + 1
                 )
 
-            lag, dfa = MFDFA(X, lag = lag, q = q, order = 0,
+            lag, dfa = MFDFA(X, lag=lag, q=q, order=0,
               modified = True, stat = False, extensions = {'EMD': [0]})
 
             assert dfa.ndim == 2, "Output is not 2 dimensional"

@@ -23,9 +23,9 @@ def test_spectrum():
                   ).astype(int) + 3
                 )
 
-            lag, dfa = MFDFA(X, lag = lag, q = q, order = 1)
+            lag, dfa = MFDFA(X, lag=lag, q=q, order=1)
 
-            alpha, f  = singspect.singularity_spectrum(lag, dfa, q = q)
+            alpha, f  = singspect.singularity_spectrum(lag, dfa, q=q)
 
             _ = singspect.singularity_spectrum(lag, dfa, q=q, lim=[None, None])
             _ = singspect.singularity_spectrum_plot(alpha, f)
