@@ -22,12 +22,12 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'MFDFA'
-copyright = '2019-2021 Leonardo Rydin'
+copyright = '2019-2022 Leonardo Rydin'
 author = 'Leonardo Rydin'
 
 # The full version, including alpha/beta/rc tags
-release = '0.4.2'
-version = '0.4.2'
+release = '0.4.3'
+version = '0.4.3'
 
 
 # -- General configuration ---------------------------------------------------

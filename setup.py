@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="MFDFA",
-    version="0.4.2",
+    version="0.4.3",
     author="Leonardo Rydin Gorjao",
     author_email="leonardo.rydin@gmail.com",
     description="Multifractal Detrended Fluctuation Analysis in Python",
