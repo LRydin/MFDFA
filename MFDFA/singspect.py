@@ -21,7 +21,7 @@ __all__ = [
 
 
 def singularity_spectrum(lag: np.array, mfdfa: np.ndarray, q: np.array,
-                         lim: list = [[],[]], interpolate: int = False
+                         lim: list = [False, False], interpolate: int = False
                          ) -> Tuple[np.array, np.array]:
     """
     Extract the slopes of the fluctuation function to further obtain the
@@ -74,11 +74,11 @@ def singularity_spectrum(lag: np.array, mfdfa: np.ndarray, q: np.array,
     """
 
     # if no lower limit is given
-    if not lim[0]:
+    if lim[0] is False:
         lim[0] = int(lag.size // 8)
 
     # if no upper limit is given
-    if not lim[1]:
+    if lim[1] is False:
          lim[1] = int(lag.size // 1.5)
 
     # clean q
@@ -97,7 +97,7 @@ def singularity_spectrum(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
 
 def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
-                      lim: list = [[],[]], interpolate: int = False
+                      lim: list = [False, False], interpolate: int = False
                       ) -> Tuple[np.array, np.array]:
     """
     Calculate the multifractal scaling exponents `τ(q)`, which is given by
@@ -157,11 +157,11 @@ def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
     """
 
     # if no lower limit is given
-    if not lim[0]:
+    if lim[0] is False:
         lim[0] = int(lag.size // 8)
 
     # if no upper limit is given
-    if not lim[1]:
+    if lim[1] is False:
          lim[1] = int(lag.size // 1.5)
 
     # clean q
@@ -174,7 +174,7 @@ def scaling_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
 
 
 def hurst_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
-                    lim: list = [[],[]], interpolate: int = False
+                    lim: list = [False, False], interpolate: int = False
                     ) -> Tuple[np.array, np.array]:
     """
     Calculate the generalised Hurst exponents `h(q)` from MFDFA, which
@@ -228,11 +228,11 @@ def hurst_exponents(lag: np.array, mfdfa: np.ndarray, q: np.array,
     """
 
     # if no lower limit is given
-    if not lim[0]:
+    if lim[0] is False:
         lim[0] = int(lag.size // 8)
 
     # if no upper limit is given
-    if not lim[1]:
+    if lim[1] is False:
          lim[1] = int(lag.size // 1.5)
 
     # clean q
@@ -258,11 +258,11 @@ def _slopes(lag: np.array, mfdfa: np.ndarray, q: np.array,
     """
 
     # if no lower limit is given
-    if not lim[0]:
+    if lim[0] is False:
         lim[0] = int(lag.size // 8)
 
     # if no upper limit is given
-    if not lim[1]:
+    if lim[1] is False:
          lim[1] = int(lag.size // 1.5)
 
     # clean q
